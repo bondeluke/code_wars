@@ -1,18 +1,11 @@
 fn to_camel_case(text: &str) -> String {
-    let chars: Vec<char> = text.chars().collect();
-    let mut camel_case: Vec<char> = Vec::new();
-    let mut i = 0;
-    while i < text.len() {
-        let char_to_push = if chars[i] == '_' || chars[i] == '-' {
-            i = i + 1;
-            chars[i].to_ascii_uppercase()
-        } else {
-            chars[i]
-        };
-        camel_case.push(char_to_push);
-        i = i + 1
-    }
-    camel_case.into_iter().collect()
+    text.split(&['-', '_'])
+        .enumerate()
+        .map(|(i, word)| match i {
+            0 => word.to_string(),
+            _ => word[..1].to_uppercase() + &word[1..],
+        })
+        .collect()
 }
 
 #[cfg(test)]
