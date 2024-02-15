@@ -1,13 +1,9 @@
 fn tribonacci(signature: &[f64; 3], n: usize) -> Vec<f64> {
-    if n <= 3 {
-        return signature[..n].to_vec();
-    }
-    let mut new_vec: Vec<f64> = signature.to_vec();
+    let mut new_vec = signature.to_vec();
     for i in 3..n {
-        let next = new_vec[i - 3..i].iter().sum();
-        new_vec.push(next)
+        new_vec.push(new_vec[i - 3..i].iter().sum())
     }
-    new_vec
+    new_vec[..n].to_vec()
 }
 
 #[test]
