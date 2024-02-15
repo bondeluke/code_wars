@@ -5,6 +5,7 @@ mod multiples_of_3_or_5;
 mod alphabet_position;
 mod spin_words;
 mod delete_nth;
+mod find_odd;
 
 fn main() {
     let word = "Hello world!";
