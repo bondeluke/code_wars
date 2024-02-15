@@ -7,6 +7,7 @@ mod spin_words;
 mod delete_nth;
 mod find_odd;
 mod likes;
+mod move_zeros;
 
 fn main() {
     let word = "Hello world!";
