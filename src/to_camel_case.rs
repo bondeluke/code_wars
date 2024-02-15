@@ -4,7 +4,7 @@
 // The next words should be always capitalized.
 
 fn to_camel_case(text: &str) -> String {
-    text.split(&['-', '_'])
+    text.split(['-', '_'])
         .enumerate()
         .map(|(i, word)| match i {
             0 => word.to_string(),

@@ -4,7 +4,13 @@ mod is_pangram;
 mod multiples_of_3_or_5;
 mod alphabet_position;
 mod spin_words;
+mod delete_nth;
 
 fn main() {
-    println!("{}", "Hello, world!");
+    let word = "Hello world!";
+
+    let x = (&word[..1]).to_uppercase();
+    let y = &word[1..];
+
+    println!("x={x} y={y}");
 }
