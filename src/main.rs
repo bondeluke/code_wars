@@ -8,6 +8,7 @@ mod delete_nth;
 mod find_odd;
 mod likes;
 mod move_zeros;
+mod tribonacci;
 
 fn main() {
     let word = "Hello world!";
