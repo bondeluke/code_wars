@@ -6,7 +6,7 @@ use std::collections::HashMap;
 
 fn find_odd(arr: &[i32]) -> i32 {
     let mut histogram : HashMap<i32, usize> = HashMap::new();
-    for &value in arr {
+    for value in arr {
         *histogram.entry(*value).or_insert(0) += 1;
     }
     *histogram.iter()
