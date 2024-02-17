@@ -6,7 +6,7 @@ I'm learning the [Rust programming language](https://www.rust-lang.org/), and I'
 - Kyu: The difficulty level of a Kata. The lower the kyu number, the higher the difficulty level.
 
 ## Completed Kata
-Here are tha Kata I've completed so far.
+Here are tha Kata I've completed so far. Each link will take to you to my source code, complete a problem description, my solution, and associated unit tests.
 - 7 kyu (easiest)
   - [Shortest Word](src/find_short.rs)
 - 6 kyu
