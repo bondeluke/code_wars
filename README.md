@@ -7,7 +7,7 @@ I'm learning the [Rust programming language](https://www.rust-lang.org/), and I'
 
 ## Completed Kata
 Here are tha Kata I've completed so far.
-- 7 kyu
+- 7 kyu (easiest)
   - [Shortest Word](src/find_short.rs)
 - 6 kyu
   - [Convert string to camel case](src/to_camel_case.rs)
