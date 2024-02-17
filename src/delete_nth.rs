@@ -1,4 +1,5 @@
-// Given a list and a number, create a new list that contains each number of list at most N times, without reordering.
+// https://www.codewars.com/kata/554ca54ffa7d91b236000023
+
 use std::collections::HashMap;
 
 pub fn delete_nth(list: &[u8], n: usize) -> Vec<u8> {

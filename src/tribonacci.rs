@@ -1,5 +1,4 @@
-// As the name may already reveal, it works basically like a Fibonacci, but summing the last 3 (instead of 2) numbers of the sequence to generate the next
-// You need to create a fibonacci function that given a signature array/list, returns the first n elements - signature included of the so seeded sequence.
+// https://www.codewars.com/kata/556deca17c58da83c00002db
 
 pub fn tribonacci(signature: &[f64; 3], n: usize) -> Vec<f64> {
     let mut new_vec = signature.to_vec();
