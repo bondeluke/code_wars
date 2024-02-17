@@ -13,6 +13,7 @@ mod sum_intervals;
 mod prime_factors;
 mod even_or_odd;
 mod positive_sum;
+mod remove_smallest;
 
 fn main() {
     println!("to_camel_case(\"the_stealth_warrior\") = \"{}\"", to_camel_case::to_camel_case("the_stealth_warrior"));
