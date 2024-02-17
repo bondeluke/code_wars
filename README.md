@@ -5,6 +5,8 @@ I'm learning the [Rust programming language](https://www.rust-lang.org/), and I'
 - Kata: The name for a programming challenge on Code Wars.
 - Kyu: The difficulty level of a Kata. The lower the kyu number, the higher the difficulty level.
 
+Here is my [Code Wars Profile](https://www.codewars.com/users/bondeluke)
+
 ## Completed Kata
 Here are the Kata I've completed so far, grouped by its kyu ranking. Each link will take you to my source code, which includes the problem description, my solution, and associated unit tests.
 - 7 kyu (easiest)
