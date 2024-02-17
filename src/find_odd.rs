@@ -1,10 +1,9 @@
 // Given an array of integers, find the one that appears an odd number of times.
-//
 // There will always be only one integer that appears an odd number of times.
 
 use std::collections::HashMap;
 
-fn find_odd(arr: &[i32]) -> i32 {
+pub fn find_odd(arr: &[i32]) -> i32 {
     let mut histogram : HashMap<i32, usize> = HashMap::new();
     for value in arr {
         *histogram.entry(*value).or_insert(0) += 1;

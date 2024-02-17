@@ -13,10 +13,6 @@ mod sum_intervals;
 mod prime_factors;
 
 fn main() {
-    let word = "Hello world!";
-
-    let x = (&word[..1]).to_uppercase();
-    let y = &word[1..];
-
-    println!("x={x} y={y}");
+    println!("to_camel_case(\"the_stealth_warrior\") = \"{}\"", to_camel_case::to_camel_case("the_stealth_warrior"));
+    println!("prime_factors(720) = {}", prime_factors::prime_factors(720))
 }

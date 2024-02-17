@@ -28,7 +28,7 @@ fn attempt_merge(intervals: Vec<(i32, i32)>) -> Vec<(i32, i32)> {
         })
 }
 
-fn sum_intervals(intervals: &[(i32, i32)]) -> i32 {
+pub fn sum_intervals(intervals: &[(i32, i32)]) -> i32 {
     let mut merged = intervals.to_vec();
 
     while {

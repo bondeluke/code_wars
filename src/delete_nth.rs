@@ -1,7 +1,7 @@
 // Given a list and a number, create a new list that contains each number of list at most N times, without reordering.
 use std::collections::HashMap;
 
-fn delete_nth(list: &[u8], n: usize) -> Vec<u8> {
+pub fn delete_nth(list: &[u8], n: usize) -> Vec<u8> {
     let mut histogram: HashMap<u8, usize> = HashMap::new();
     let mut new_list: Vec<u8> = Vec::new();
 

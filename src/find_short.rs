@@ -1,7 +1,7 @@
 // Simple, given a string of words, return the length of the shortest word(s).
 // String will never be empty, and you do not need to account for different data types.
 
-fn find_short(s: &str) -> u32 {
+pub fn find_short(s: &str) -> u32 {
     s.split(' ')
         .map(|word| word.len())
         .min()

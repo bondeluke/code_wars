@@ -3,7 +3,7 @@
 // (known as Upper Camel Case, also often referred to as Pascal case).
 // The next words should be always capitalized.
 
-fn to_camel_case(text: &str) -> String {
+pub fn to_camel_case(text: &str) -> String {
     text.split(['-', '_'])
         .enumerate()
         .map(|(i, word)| match i {

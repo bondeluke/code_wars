@@ -3,7 +3,7 @@
 // with the p(i) in increasing order and n(i) empty if n(i) is 1.
 // Example: n = 86240 should return "(2**5)(5)(7**2)(11)"
 
-fn prime_factors(n: i64) -> String {
+pub fn prime_factors(n: i64) -> String {
     let mut factors: Vec<(u64, u8)> = Vec::new();
     let mut number: u64 = n as u64;
     let sqrt = (n as f64).sqrt() as u64;
