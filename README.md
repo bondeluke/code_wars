@@ -18,7 +18,7 @@ Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads
   - [Shortest Word](src/find_short.rs)
   - [Remove the minimum](src/remove_smallest.rs)
   
-- ![6kyu](https://github.com/bondeluke/code_wars/assets/7105195/525c141a-4574-43fc-94f4-24d2eb1acbad)
+- ![6kyu](https://github.com/bondeluke/code_wars/assets/7105195/f58cce12-466f-480b-964c-1d8c6d9893c5)
   - [Convert string to camel case](src/to_camel_case.rs)
   - [Detect Pangram](src/is_pangram.rs)
   - [Multiples of 3 or 5](src/multiples_of_3_or_5.rs)
@@ -34,5 +34,6 @@ Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads
   - [Primes in numbers](src/prime_factors.rs)
 - 4 kyu
   - [Sum of Intervals](src/sum_intervals.rs)
+
 
 
