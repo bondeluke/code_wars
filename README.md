@@ -10,7 +10,7 @@ As part of my learning journey, I've joined [CodeWars](https://www.codewars.com/
 You can find my CodeWars profile [here](https://www.codewars.com/users/bondeluke).
 
 ## Completed Kata
-Here are the Kata I've completed so far, grouped by its kyu ranking. Each link will take you to my source code, which includes the problem description, my solution, and associated unit tests.
+Here are the Kata I've completed so far, grouped by its kyu ranking. Each link leads you to my source code, which includes a link to the problem, my solution, and associated unit tests.
 - 7 kyu
   - [Shortest Word](src/find_short.rs)
 - 6 kyu
