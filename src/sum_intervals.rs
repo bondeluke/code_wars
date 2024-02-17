@@ -1,6 +1,4 @@
-// Write a function called sum_intervals that accepts an array of intervals,
-// and returns the sum of all the interval lengths.
-// Overlapping intervals should only be counted once.
+// https://www.codewars.com/kata/52b7ed099cdc285c300001cd
 
 fn can_merge(a: &(i32, i32), b: &(i32, i32)) -> bool {
     let (smaller, larger) = if a.0 <= b.0 { (a, b) } else { (b, a) };
