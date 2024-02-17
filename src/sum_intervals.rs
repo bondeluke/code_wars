@@ -33,8 +33,7 @@ fn smash(intervals: Vec<(i32, i32)>) -> Vec<(i32, i32)> {
 }
 
 fn sum_intervals(intervals: &[(i32, i32)]) -> i32 {
-    let mut combined: Vec<(i32, i32)> = intervals.to_vec();
-    let mut length = combined.len();
+    let mut merged = intervals.to_vec();
 
     loop {
         combined = smash(combined);
