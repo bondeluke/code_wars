@@ -10,7 +10,7 @@ As part of my learning journey, I've joined [CodeWars](https://www.codewars.com/
 You can find my CodeWars profile [here](https://www.codewars.com/users/bondeluke).
 
 ## Completed Kata
-Here are the Kata I've completed so far, grouped by its kyu ranking. Each link leads you to my source code, which includes a link to the problem, my solution, and associated unit tests.
+Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads you to my source code, which includes a hyperlink to the problem statement, my solution, and associated unit tests.
 - 8 kyu
   - [Even or Odd](src/even_or_odd.rs)
 - 7 kyu
