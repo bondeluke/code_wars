@@ -16,6 +16,7 @@ Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads
   - [Sum of positive](src/positive_sum.rs)
 - 7 kyu
   - [Shortest Word](src/find_short.rs)
+  - [Remove the minimum](src/remove_smallest.rs)
 - 6 kyu
   - [Convert string to camel case](src/to_camel_case.rs)
   - [Detect Pangram](src/is_pangram.rs)
