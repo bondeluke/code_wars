@@ -11,7 +11,7 @@ You can find my CodeWars profile [here](https://www.codewars.com/users/bondeluke
 
 ## Completed Kata
 Here are the Kata I've completed so far, grouped by its kyu ranking. Each link will take you to my source code, which includes the problem description, my solution, and associated unit tests.
-- 7 kyu (easiest)
+- 7 kyu
   - [Shortest Word](src/find_short.rs)
 - 6 kyu
   - [Convert string to camel case](src/to_camel_case.rs)
