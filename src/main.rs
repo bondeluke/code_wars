@@ -10,6 +10,7 @@ mod likes;
 mod move_zeros;
 mod tribonacci;
 mod sum_intervals;
+mod prime_factors;
 
 fn main() {
     let word = "Hello world!";
