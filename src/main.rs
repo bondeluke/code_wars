@@ -9,6 +9,7 @@ mod find_odd;
 mod likes;
 mod move_zeros;
 mod tribonacci;
+mod sum_intervals;
 
 fn main() {
     let word = "Hello world!";
