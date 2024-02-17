@@ -11,6 +11,8 @@ You can find my CodeWars profile [here](https://www.codewars.com/users/bondeluke
 
 ## Completed Kata
 Here are the Kata I've completed so far, grouped by its kyu ranking. Each link leads you to my source code, which includes a link to the problem, my solution, and associated unit tests.
+- 8 kyu
+  - [Even or Odd](src/even_or_odd.rs)
 - 7 kyu
   - [Shortest Word](src/find_short.rs)
 - 6 kyu
