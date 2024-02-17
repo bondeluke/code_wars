@@ -14,5 +14,6 @@ mod prime_factors;
 
 fn main() {
     println!("to_camel_case(\"the_stealth_warrior\") = \"{}\"", to_camel_case::to_camel_case("the_stealth_warrior"));
-    println!("prime_factors(720) = {}", prime_factors::prime_factors(720))
+    println!("prime_factors(720) = \"{}\"", prime_factors::prime_factors(720));
+    println!("alphabet_position(\"The narwhal bacons at midnight.\") = \"{}\"", alphabet_position::alphabet_position("The narwhal bacons at midnight."))
 }
