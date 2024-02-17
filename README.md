@@ -27,8 +27,9 @@ Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads
   - [Find the odd int](src/find_odd.rs)
   - [Who likes it?](src/likes.rs)
   - [Tribonacci Sequence](src/tribonacci.rs)
-- ![5kyu](https://github.com/bondeluke/code_wars/assets/7105195/e2fb8361-aafb-494e-95b2-a67ce69ccea2)
+- ![5kyu](https://github.com/bondeluke/code_wars/assets/7105195/8caa7e6a-fe05-4571-9222-cfc8bb18468a)
   - [Moving Zeros To The End](src/move_zeros.rs)
   - [Primes in numbers](src/prime_factors.rs)
 - ![4kyu](https://github.com/bondeluke/code_wars/assets/7105195/46fa29f1-fa4e-4404-bc1f-c2545558bc10)
   - [Sum of Intervals](src/sum_intervals.rs)
+
