@@ -16,7 +16,7 @@ pub fn spin_words(words: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::spin_words::spin_words;
+    use super::spin_words;
 
     #[test]
     fn examples() {

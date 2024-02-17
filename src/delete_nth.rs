@@ -19,7 +19,7 @@ pub fn delete_nth(list: &[u8], n: usize) -> Vec<u8> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::delete_nth;
 
     #[test]
     fn test_basic() {

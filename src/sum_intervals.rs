@@ -44,7 +44,7 @@ pub fn sum_intervals(intervals: &[(i32, i32)]) -> i32 {
 
 #[cfg(test)]
 mod sample_tests {
-    use super::*;
+    use super::sum_intervals;
 
     const ERR_MSG: &str = "\nYour result (left) did not match expected output (right).";
 
