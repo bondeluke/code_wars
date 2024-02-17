@@ -11,13 +11,12 @@ You can find my CodeWars profile [here](https://www.codewars.com/users/bondeluke
 
 ## Completed Kata
 Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads you to my source code, which includes a hyperlink to the problem statement, my solution, and associated unit tests.
-- 8 kyu
+- ![8kyu](https://github.com/bondeluke/code_wars/assets/7105195/406eceb7-a588-4585-a2c9-5e0d48192115)
   - [Even or Odd](src/even_or_odd.rs)
   - [Sum of positive](src/positive_sum.rs)
-- 7 kyu
+- ![7kyu](https://github.com/bondeluke/code_wars/assets/7105195/048c9bee-02d1-4c96-8f06-1623ffbc5a46)
   - [Shortest Word](src/find_short.rs)
   - [Remove the minimum](src/remove_smallest.rs)
-  
 - ![6kyu](https://github.com/bondeluke/code_wars/assets/7105195/f58cce12-466f-480b-964c-1d8c6d9893c5)
   - [Convert string to camel case](src/to_camel_case.rs)
   - [Detect Pangram](src/is_pangram.rs)
@@ -28,12 +27,8 @@ Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads
   - [Find the odd int](src/find_odd.rs)
   - [Who likes it?](src/likes.rs)
   - [Tribonacci Sequence](src/tribonacci.rs)
-
-- 5 kyu
+- ![5kyu](https://github.com/bondeluke/code_wars/assets/7105195/e2fb8361-aafb-494e-95b2-a67ce69ccea2)
   - [Moving Zeros To The End](src/move_zeros.rs)
   - [Primes in numbers](src/prime_factors.rs)
-- 4 kyu
+- ![4kyu](https://github.com/bondeluke/code_wars/assets/7105195/46fa29f1-fa4e-4404-bc1f-c2545558bc10)
   - [Sum of Intervals](src/sum_intervals.rs)
-
-
-
