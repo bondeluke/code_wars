@@ -7,7 +7,7 @@ So I joined [CodeWars](https://www.codewars.com/), an online platform designed t
 - **Kata:** The name for programming challenge on CodeWars.
 - **Kyu:** Denotes the difficulty level of a Kata. The lower the kyu number, the higher the difficulty level.
 
-You can find my CodeWars profile [here](https://www.codewars.com/users/bondeluke). This repository exists to and document my solutions and track my progress. 
+You can find my CodeWars profile [here](https://www.codewars.com/users/bondeluke). This repository exists to document my solutions and track my progress. 
 
 ## Completed Kata
 Here are the Kata I've completed so far, grouped by its kyu ranking. Each link leads you to my source code, which includes a link to the problem, my solution, and associated unit tests.
