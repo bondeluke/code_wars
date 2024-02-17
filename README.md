@@ -2,7 +2,7 @@
 I'm learning the [Rust programming language](https://www.rust-lang.org/), and I'm using this repository to document my solutions and track my progress as I practice my Rust programming skills.
 
 [CodeWars](https://www.codewars.com/) is an online platform designed to enhance users' coding abilities through the completion of coding challenges, known as "kata". These challenges are divided into difficulty levels represented by "kyu" rankings, similar to martial arts belts. The lower the kyu number, the higher the difficulty level.
-- Kata: The name for a prgogramming challenge on Code Wars
+- Kata: The name for a programming challenge on Code Wars.
 - Kyu: The difficulty level of a Kata. The lower the kyu number, the higher the difficulty level.
 
 ## Completed Kata
