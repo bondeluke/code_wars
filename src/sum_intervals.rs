@@ -1,3 +1,13 @@
+// Write a function called sum_intervals that accepts an array of intervals,
+// and returns the sum of all the interval lengths.
+// Overlapping intervals should only be counted once.
+
+fn can_merge(a: &(i32, i32), b: &(i32, i32)) -> bool {
+    let (smaller, larger) = if a.0 <= b.0 { (a, b) } else { (b, a) };
+    return smaller.1 >= larger.0;  // i.e. not SSLL
+}
+
+// merge assumes the parameters a and b can be merged
 fn merge(a: (i32, i32), b: (i32, i32)) -> (i32, i32) {
     let (smaller, larger) = if a.0 <= b.0 { (a, b) } else { (b, a) };
     if larger.1 <= smaller.1 {
@@ -7,44 +17,28 @@ fn merge(a: (i32, i32), b: (i32, i32)) -> (i32, i32) {
     }
 }
 
-fn can_merge(a: (i32, i32), b: (i32, i32)) -> bool {
-    let (smaller, larger) = if a.0 <= b.0 { (a, b) } else { (b, a) };
-    return smaller.1 >= larger.0;  // i.e. not SSLL
-}
-
-fn smash(intervals: Vec<(i32, i32)>) -> Vec<(i32, i32)> {
-    let mut new_vec = Vec::new();
-
-    for interval in intervals {
-        let mut merge_happened = false;
-        for i in 0..new_vec.len() {
-            if can_merge(new_vec[i], interval) {
-                new_vec[i] = merge(new_vec[i], interval);
-                merge_happened = true;
-                break;
+fn attempt_merge(intervals: Vec<(i32, i32)>) -> Vec<(i32, i32)> {
+    intervals.into_iter()
+        .fold(Vec::new(), |mut merged, interval| {
+            match merged.iter_mut().find(|e| can_merge(*e, &interval)) {
+                Some(element) => *element = merge(*element, interval),
+                None => merged.push(interval),
             }
-        }
-        if !merge_happened {
-            new_vec.push(interval);
-        }
-    }
-
-    new_vec
+            merged
+        })
 }
 
 fn sum_intervals(intervals: &[(i32, i32)]) -> i32 {
     let mut merged = intervals.to_vec();
 
-    loop {
-        combined = smash(combined);
-        if combined.len() == length {
-            break;
-        }
-        length = combined.len()
-    }
+    while {
+        let prev_len = merged.len();
+        merged = attempt_merge(merged);
+        prev_len != merged.len()
+    } {}
 
-    combined.iter()
-        .map(|&(left, right)| { right - left })
+    merged.into_iter()
+        .map(|(left, right)| { right - left })
         .sum()
 }
 
