@@ -33,6 +33,7 @@ Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads
   - [Primes in numbers](src/prime_factors.rs)
   - [Human Readable Time](src/human_readable_time.rs)
   - [Last digit of a large number](src/last_digit.rs)
+  - [RGB To Hex Conversion](src/rgb_to_hex.rs)
 - ![4kyu](https://github.com/bondeluke/code_wars/assets/7105195/46fa29f1-fa4e-4404-bc1f-c2545558bc10)
   - [Sum of Intervals](src/sum_intervals.rs)
 
