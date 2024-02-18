@@ -17,6 +17,7 @@ Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads
 - ![7kyu](https://github.com/bondeluke/code_wars/assets/7105195/048c9bee-02d1-4c96-8f06-1623ffbc5a46)
   - [Shortest Word](src/find_short.rs)
   - [Remove the minimum](src/remove_smallest.rs)
+  - [Is There an Odd Bit?](src/odd_bit.rs)
 - ![6kyu](https://github.com/bondeluke/code_wars/assets/7105195/f58cce12-466f-480b-964c-1d8c6d9893c5)
   - [Convert string to camel case](src/to_camel_case.rs)
   - [Detect Pangram](src/is_pangram.rs)

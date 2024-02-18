@@ -16,6 +16,7 @@ mod positive_sum;
 mod remove_smallest;
 mod human_readable_time;
 mod last_digit;
+mod odd_bit;
 
 fn main() {
     for i in 1..15 {
