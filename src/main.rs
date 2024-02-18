@@ -22,9 +22,12 @@ mod directions_reduction;
 mod rot13;
 mod snail;
 mod alphanumeric;
+mod millionth_fibonacci;
 
 fn main() {
-    for i in 1..15 {
-        println!("{}", 9_i32.pow(i))
+    let array = &[1, 2, 3, 4, 5];
+    let mut new_vec: Vec<u8> = Vec::new();
+    for &number in array {
+        new_vec.push(number)
     }
 }
