@@ -1,5 +1,6 @@
 // https://www.codewars.com/kata/54d512e62a5e54c96200019e
 
+#[allow(dead_code)]
 pub fn prime_factors(n: i64) -> String {
     let mut factors: Vec<(u64, u8)> = Vec::new();
     let mut number: u64 = n as u64;
@@ -32,15 +33,20 @@ pub fn prime_factors(n: i64) -> String {
         .collect()
 }
 
-fn testing(n: i64, exp: &str) -> () {
-    assert_eq!(&prime_factors(n), exp)
-}
+#[cfg(test)]
+mod tests {
+    use crate::prime_factors::prime_factors;
 
-#[test]
-fn basics_prime_factors() {
-    testing(7775460, "(2**2)(3**3)(5)(7)(11**2)(17)");
-    testing(17 * 17 * 93 * 677, "(3)(17**2)(31)(677)");
-    testing(2 * 2 * 3 * 13, "(2**2)(3)(13)");
-    testing(7537 * 123863, "(7537)(123863)");
-    testing(29 * 29, "(29**2)");
+    fn testing(n: i64, exp: &str) -> () {
+        assert_eq!(&prime_factors(n), exp)
+    }
+
+    #[test]
+    fn basics_prime_factors() {
+        testing(7775460, "(2**2)(3**3)(5)(7)(11**2)(17)");
+        testing(17 * 17 * 93 * 677, "(3)(17**2)(31)(677)");
+        testing(2 * 2 * 3 * 13, "(2**2)(3)(13)");
+        testing(7537 * 123863, "(7537)(123863)");
+        testing(29 * 29, "(29**2)");
+    }
 }

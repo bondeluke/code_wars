@@ -4,6 +4,7 @@ pub fn solution(num: i32) -> i32 {
     (0..num).filter(|n| n % 3 == 0 || n % 5 == 0).sum()
 }
 
+#[allow(dead_code)]
 mod tests {
     use super::solution;
 

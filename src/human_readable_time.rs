@@ -1,5 +1,6 @@
 // https://www.codewars.com/kata/52685f7382004e774f0001f7/train/rust
 
+#[allow(dead_code)]
 fn make_readable(seconds_total: u32) -> String {
     let s = seconds_total % 60;
     let m_s = (seconds_total - s) % 3600;

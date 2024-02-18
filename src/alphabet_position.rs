@@ -1,5 +1,6 @@
 // https://www.codewars.com/kata/546f922b54af40e1e90001da
 
+#[allow(dead_code)]
 pub fn alphabet_position(text: &str) -> String {
     text.to_lowercase()
         .chars()

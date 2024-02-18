@@ -1,5 +1,6 @@
 // https://www.codewars.com/kata/5266876b8f4bf2da9b000362
 
+#[allow(dead_code)]
 pub fn likes(names: &[&str]) -> String {
     match names {
         [] => "no one likes this".to_string(),

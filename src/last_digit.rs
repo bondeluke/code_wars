@@ -13,6 +13,7 @@
 //   8     |  4, 2, 6, 8
 //   9     |  1, 9
 
+#[allow(dead_code)]
 fn last_digit(base: &str, exp: &str) -> i32 {
     if exp == "0" { return 1; }
 

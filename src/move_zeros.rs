@@ -1,5 +1,6 @@
 // https://www.codewars.com/kata/52597aa56021e91c93000cb0
 
+#[allow(dead_code)]
 pub fn move_zeros(arr: &[u8]) -> Vec<u8> {
     let mut zero_vec: Vec<u8> = Vec::new();
     let mut new_vec: Vec<u8> = Vec::new();

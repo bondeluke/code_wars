@@ -1,5 +1,6 @@
 // https://www.codewars.com/kata/5264d2b162488dc400000001
 
+#[allow(dead_code)]
 pub fn spin_words(words: &str) -> String {
     words.split(' ')
         .map(|word| match word.len() >= 5 {

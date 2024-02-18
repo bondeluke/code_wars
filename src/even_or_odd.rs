@@ -1,5 +1,6 @@
 // https://www.codewars.com/kata/53da3dbb4a5168369a0000fe
 
+#[allow(dead_code)]
 fn even_or_odd(number: i32) -> &'static str {
     match number % 2 {
         0 => "Even",

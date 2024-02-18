@@ -2,6 +2,7 @@
 
 use std::collections::HashMap;
 
+#[allow(dead_code)]
 pub fn find_odd(arr: &[i32]) -> i32 {
     let mut histogram : HashMap<i32, usize> = HashMap::new();
     for value in arr {

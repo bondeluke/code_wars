@@ -1,5 +1,6 @@
 // https://www.codewars.com/kata/563cf89eb4747c5fb100001b
 
+#[allow(dead_code)]
 fn remove_smallest(numbers: &[u32]) -> Vec<u32> {
     let mut numbers = numbers.to_vec();
     match numbers.iter().enumerate().min_by_key(|(_, value)| **value) {

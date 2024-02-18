@@ -2,6 +2,7 @@
 
 use std::collections::HashMap;
 
+#[allow(dead_code)]
 pub fn delete_nth(list: &[u8], n: usize) -> Vec<u8> {
     let mut histogram: HashMap<u8, usize> = HashMap::new();
     let mut new_list: Vec<u8> = Vec::new();
