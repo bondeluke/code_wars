@@ -19,6 +19,7 @@ mod last_digit;
 mod odd_bit;
 mod rgb_to_hex;
 mod directions_reduction;
+mod rot13;
 
 fn main() {
     for i in 1..15 {
