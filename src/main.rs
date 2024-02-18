@@ -18,6 +18,7 @@ mod human_readable_time;
 mod last_digit;
 mod odd_bit;
 mod rgb_to_hex;
+mod directions_reduction;
 
 fn main() {
     for i in 1..15 {
