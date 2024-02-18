@@ -4,6 +4,7 @@ fn rotate(c: char, lb: u8, rot: u8) -> char {
     (lb + (c as u8 - lb + rot) % 26) as char
 }
 
+#[allow(dead_code)]
 fn rot13(message: &str) -> String {
     const ROT: u8 = 13;
     message.chars().map(|c| match c {

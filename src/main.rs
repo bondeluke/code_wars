@@ -20,6 +20,7 @@ mod odd_bit;
 mod rgb_to_hex;
 mod directions_reduction;
 mod rot13;
+mod snail;
 
 fn main() {
     for i in 1..15 {
