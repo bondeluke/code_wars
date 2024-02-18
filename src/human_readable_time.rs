@@ -1,26 +1,10 @@
 // https://www.codewars.com/kata/52685f7382004e774f0001f7/train/rust
 
-struct DivisionResult {
-    quotient: u32,
-    remainder: u32,
-}
-
-fn divide(dividend: u32, divisor: u32) -> DivisionResult {
-    let remainder = dividend % divisor;
-    let quotient = (dividend - remainder) / divisor;
-    DivisionResult {
-        remainder,
-        quotient,
-    }
-}
-
-fn make_readable(seconds: u32) -> String {
-    let hours = divide(seconds, 60 * 60);
-    let minutes = divide(hours.remainder, 60);
-    let h = hours.quotient;
-    let m = minutes.quotient;
-    let s = minutes.remainder;
-    format!("{h:02}:{m:02}:{s:02}")
+fn make_readable(seconds_total: u32) -> String {
+    let s = seconds_total % 60;
+    let m_s = (seconds_total - s) % 3600;
+    let h_s = seconds_total - s - m_s;
+    format!("{:02}:{:02}:{:02}", h_s / 3600, m_s / 60, s)
 }
 
 #[cfg(test)]
