@@ -17,29 +17,17 @@ fn are_opposites(a: Direction, b: Direction) -> bool {
     }
 }
 
-fn try_reduce(directions: Vec<Direction>) -> Vec<Direction> {
-    if directions.len() <= 1 {
-        return directions;
-    }
-    for i in 0..directions.len() - 1 {
-        if are_opposites(directions[i], directions[i + 1]) {
-            return [&directions[..i], &directions[i + 2..]].concat();
-        }
-    }
-    directions
-}
-
 #[allow(dead_code)]
 fn dir_reduc(arr: &[Direction]) -> Vec<Direction> {
-    let mut directions = arr.to_vec();
-    loop {
-        let prev_len = directions.len();
-        directions = try_reduce(directions);
-        if prev_len == directions.len() {
-            break;
+    let mut stack = vec![];
+    for &direction in arr.iter() {
+        if stack.is_empty() || !are_opposites(direction, *stack.last().unwrap()) {
+            stack.push(direction);
+        } else {
+            stack.pop();
         }
     }
-    directions
+    stack
 }
 
 #[cfg(test)]
