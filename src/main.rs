@@ -15,9 +15,10 @@ mod even_or_odd;
 mod positive_sum;
 mod remove_smallest;
 mod human_readable_time;
+mod last_digit;
 
 fn main() {
-    println!("to_camel_case(\"the_stealth_warrior\") = \"{}\"", to_camel_case::to_camel_case("the_stealth_warrior"));
-    println!("prime_factors(720) = \"{}\"", prime_factors::prime_factors(720));
-    println!("alphabet_position(\"The narwhal bacons at midnight.\") = \"{}\"", alphabet_position::alphabet_position("The narwhal bacons at midnight."))
+    for i in 1..15 {
+        println!("{}", 9_i32.pow(i))
+    }
 }
