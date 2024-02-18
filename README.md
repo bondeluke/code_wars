@@ -36,6 +36,7 @@ Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads
   - [RGB To Hex Conversion](src/rgb_to_hex.rs)
   - [Directions Reduction](src/directions_reduction.rs)
   - [Rot 13](src/rot13.rs)
+  - [Not very secure](src/alphanumeric.rs)
 - ![4kyu](https://github.com/bondeluke/code_wars/assets/7105195/46fa29f1-fa4e-4404-bc1f-c2545558bc10)
   - [Sum of Intervals](src/sum_intervals.rs)
   - [Snail](src/snail.rs)

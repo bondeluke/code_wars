@@ -21,6 +21,7 @@ mod rgb_to_hex;
 mod directions_reduction;
 mod rot13;
 mod snail;
+mod alphanumeric;
 
 fn main() {
     for i in 1..15 {
