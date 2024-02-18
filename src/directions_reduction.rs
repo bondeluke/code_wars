@@ -8,23 +8,24 @@ enum Direction {
     South,
 }
 
-fn are_opposites(a: Direction, b: Direction) -> bool {
-    match a {
-        Direction::North => { b == Direction::South }
-        Direction::East => { b == Direction::West }
-        Direction::West => { b == Direction::East }
-        Direction::South => { b == Direction::North }
+impl Direction {
+    fn opposite(&self, other: &Direction) -> bool {
+        match self {
+            Direction::North => *other == Direction::South,
+            Direction::East => *other == Direction::West,
+            Direction::West => *other == Direction::East,
+            Direction::South => *other == Direction::North
+        }
     }
 }
 
 #[allow(dead_code)]
 fn dir_reduc(arr: &[Direction]) -> Vec<Direction> {
     let mut stack = vec![];
-    for &direction in arr.iter() {
-        if stack.is_empty() || !are_opposites(direction, *stack.last().unwrap()) {
-            stack.push(direction);
-        } else {
-            stack.pop();
+    for &dir in arr.iter() {
+        match stack.is_empty() || !dir.opposite(stack.last().unwrap()) {
+            true => { stack.push(dir); }
+            false => { stack.pop(); }
         }
     }
     stack
