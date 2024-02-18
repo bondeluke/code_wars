@@ -1,3 +1,5 @@
+use crate::millionth_fibonacci::fib;
+
 mod to_camel_case;
 mod find_short;
 mod is_pangram;
@@ -25,9 +27,5 @@ mod alphanumeric;
 mod millionth_fibonacci;
 
 fn main() {
-    let array = &[1, 2, 3, 4, 5];
-    let mut new_vec: Vec<u8> = Vec::new();
-    for &number in array {
-        new_vec.push(number)
-    }
+    println!("{}", fib(2000000))
 }

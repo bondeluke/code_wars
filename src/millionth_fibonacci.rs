@@ -1,38 +1,46 @@
-use num::bigint::BigInt;
-use num::{One, Zero};
+use num_bigint::BigInt;
+use num_traits::{One, Zero};
 
-fn fib(n: i32) -> BigInt {
-    match n {
-        0 | 1 => BigInt::from(n),
-        _ if n > 0 => {
-            let mut fi = BigInt::zero();
-            let mut fi_1 = BigInt::one();
-            let mut fi_2 = BigInt::zero();
+// Define a 2x2 matrix type
+type Matrix = [[BigInt; 2]; 2];
 
-            for _ in 2..=n {
-                fi = fi_1.clone() + fi_2.clone();
-                fi_2 = fi_1;
-                fi_1 = fi.clone();
+// Multiply two matrices
+fn matrix_multiply(a: &Matrix, b: &Matrix) -> Matrix {
+    let mut result = [[BigInt::zero(), BigInt::zero()], [BigInt::zero(), BigInt::zero()]];
+    for i in 0..2 {
+        for j in 0..2 {
+            for k in 0..2 {
+                result[i][j] += &a[i][k] * &b[k][j];
             }
-            fi
-        }
-        _ => {
-            let mut fi = BigInt::one();
-            let mut fi_1 = BigInt::zero();
-            let mut fi_2 = BigInt::one();
-
-            for _ in (n..=-1).rev() {
-                fi = fi_2.clone() - fi_1.clone();
-                fi_2 = fi_1;
-                fi_1 = fi.clone();
-            }
-            fi
         }
     }
+    result
 }
 
-// Add your tests here.
-// See https://doc.rust-lang.org/stable/rust-by-example/testing/unit_testing.html
+// Compute the power of a matrix
+fn matrix_power(mut m: Matrix, mut exp: i32) -> Matrix {
+    let mut result = [[BigInt::zero(), BigInt::zero()], [BigInt::zero(), BigInt::zero()]];
+    result[0][0] = BigInt::one();
+    result[1][1] = BigInt::one();
+    while exp > 0 {
+        if exp % 2 == 1 {
+            result = matrix_multiply(&result, &m);
+        }
+        m = matrix_multiply(&m, &m);
+        exp /= 2;
+    }
+    result
+}
+
+// Compute the n-th Fibonacci number using matrix exponentiation
+pub fn fib(n: i32) -> BigInt {
+    if n <= 0 {
+        return BigInt::zero();
+    }
+    let matrix = [[BigInt::one(), BigInt::one()], [BigInt::one(), BigInt::zero()]];
+    let result = matrix_power(matrix, n - 1);
+    result[0][0].clone()
+}
 
 #[cfg(test)]
 mod sample_tests {
