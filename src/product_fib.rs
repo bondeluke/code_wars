@@ -1,5 +1,6 @@
 // https://www.codewars.com/kata/5541f58a944b85ce6d00006a/train/rust
 
+#[allow(dead_code)]
 fn product_fib(prod: u64) -> (u64, u64, bool) {
     let (mut a, mut b) = (0, 1);
 
@@ -9,7 +10,6 @@ fn product_fib(prod: u64) -> (u64, u64, bool) {
 
     (b, a, a * b == prod)
 }
-
 
 #[cfg(test)]
 mod tests {
