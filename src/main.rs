@@ -26,6 +26,7 @@ mod snail;
 mod alphanumeric;
 mod millionth_fibonacci;
 mod last_digit_huge;
+mod product_fib;
 
 fn main() {
     println!("{}", BigInt::from(2).pow(41));
