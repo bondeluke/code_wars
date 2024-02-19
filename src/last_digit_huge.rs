@@ -1,45 +1,29 @@
-fn last_2_digits(base: &str, exp: &str) -> u64 {
-    if exp == "0" { return 1; }
+fn last_2_digits(base: u64, exp: u64) -> u64 {
+    let b_m = base % 10;
+    let e_em = exp % 100;
+    if exp == 0 { return 1; }
 
-    let exp_mod_100 = match exp.len() {
-        1 => exp,
-        len => &exp[len - 2..]
-    }.parse::<u64>().unwrap();
-
-    let base_last_digit = base[base.len() - 1..].parse::<u64>().unwrap();
-
-    if base_last_digit == 0 {
-        return 20;
-    }
-    if base_last_digit == 1 {
-        return if exp_mod_100 == 1 {
-            1
-        } else { 21 }
-    }
-    if base_last_digit == 5 {
-        return 5;
-    }
-
-    let the_mod = match base_last_digit {
+    let the_mod = match b_m {
+        1 => { return if e_em == 1 { 1 } else { 21 }; }
+        0 => { return if base == 0 { 0 } else { 20 }; }
+        5 => { return 5; }
         6 => { 5 }
         7 => { 4 }
         4 | 9 => { 10 }
-        // 0 | 1 | 5 => { return base_last_digit; }
         2 | 3 | 8 => { 20 }
-        _ => panic!("Unexpected.")
+        _r => panic!("Unexpected. {_r}")
     };
 
-    if exp_mod_100 < the_mod {
-        return base_last_digit.pow(exp_mod_100 as u32) % 100;
+    if e_em < the_mod {
+        return b_m.pow(e_em as u32) % 100;
     }
 
-    match exp_mod_100 % the_mod {
-        0 => base_last_digit.pow(the_mod as u32) % 100,
-        1 => base_last_digit.pow((the_mod + 1) as u32) % 100,
-        2 => base_last_digit.pow((the_mod + 2) as u32) % 100,
-        3 => base_last_digit.pow((the_mod + 3) as u32) % 100,
-        4 => base_last_digit.pow((the_mod + 4) as u32) % 100,
-        r => base_last_digit.pow(r as u32) % 100
+    match e_em % the_mod {
+        0 => b_m.pow(the_mod as u32) % 100,
+        1 => b_m.pow((the_mod + 1) as u32) % 100,
+        2 => b_m.pow((the_mod + 2) as u32) % 100,
+        3 => b_m.pow((the_mod + 3) as u32) % 100,
+        r => b_m.pow(r as u32) % 100
     }
 }
 
@@ -48,19 +32,16 @@ pub fn last_digit(list: &[u64]) -> u64 {
     if list.is_empty() {
         return 1;
     }
-    if list.len() == 1 {
-        return list[0];
-    }
 
     let mut l = list.to_vec();
 
     let mut exp = l.pop().unwrap();
     let mut base = l.pop().unwrap();
-    let mut last2 = last_2_digits(&base.to_string(), &exp.to_string());
+    let mut last2 = last_2_digits(base, exp);
     while !l.is_empty() {
         exp = last2;
         base = l.pop().unwrap();
-        last2 = last_2_digits(&base.to_string(), &exp.to_string());
+        last2 = last_2_digits(base, exp);
     }
     last2 % 10
 }
@@ -80,6 +61,7 @@ mod tests {
         for (a, b) in [
             (vec![], 1),
             (vec![0, 0], 1),
+            (vec![0, 1], 0),
             (vec![0, 0, 0], 0),
             (vec![1, 2], 1),
             (vec![3, 4, 5], 1),
@@ -90,7 +72,9 @@ mod tests {
             (vec![2, 2, 101, 2], 6),
             (vec![937640, 767456, 981242], 0),
             (vec![123232, 694022, 140249], 6),
-            (vec![499942, 898102, 846073], 6)
+            (vec![499942, 898102, 846073], 6),
+            (vec![0, 0, 0, 0, 1, 1, 0, 0, 0, 1], 1),
+            (vec![0, 0, 0, 0, 1, 0, 2, 2, 1, 0], 1),
         ] {
             do_test(&a, b);
         }
