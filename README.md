@@ -8,7 +8,9 @@ So I joined [CodeWars](https://www.codewars.com/), an online platform designed t
 - **Kyu:** Denotes the difficulty level of a Kata. The lower the kyu number, the higher the difficulty level.
 
 You can find my CodeWars profile [here](https://www.codewars.com/users/bondeluke). 
+
 ![CodeWarsRank](https://www.codewars.com/users/bondeluke/badges/small)
+
 This repository exists to document my solutions and track my progress. 
 
 ## Completed Kata
