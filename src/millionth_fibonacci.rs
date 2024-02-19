@@ -1,8 +1,11 @@
-use num_bigint::BigInt;
-use num_traits::{Zero};
+// https://www.codewars.com/kata/53d40c1e2f13e331fc000c26
+
+use num::bigint::BigInt;
+use num::traits::{Zero};
 
 type Matrix = [[BigInt; 2]; 2];
 
+// Maybe turn this into a macro once I understand how to write them
 fn parse(m: [[i32; 2]; 2]) -> Matrix {
     [
         [BigInt::from(m[0][0]), BigInt::from(m[0][1])],
@@ -22,27 +25,31 @@ fn multiply(a: &Matrix, b: &Matrix) -> Matrix {
     result
 }
 
-// Compute the power of a matrix
-fn matrix_power(mut m: Matrix, mut exp: i32) -> Matrix {
-    let mut result = parse([[1, 0], [1, 0]]);
-    while exp > 0 {
-        if exp % 2 == 1 {
-            result = multiply(&result, &m);
+// Compute the power of a matrix using binary exponentiation algorithm
+fn matrix_power(mut m: Matrix, mut exp: u32) -> Matrix {
+    let mut result = parse([[1, 0], [0, 1]]);
+    loop {
+        if exp & 1 != 0 {
+            result = multiply(&result, &m)
+        }
+        exp >>= 1;
+        if exp == 0 {
+            break;
         }
         m = multiply(&m, &m);
-        exp /= 2;
     }
     result
 }
 
 // Compute the n-th Fibonacci number using matrix exponentiation
 // https://rosettacode.org/wiki/Fibonacci_matrix-exponentiation
+#[allow(dead_code)]
 pub fn fib(n: i32) -> BigInt {
     if n == 0 { return BigInt::zero(); }
 
     let result = match n > 0 {
-        true => { matrix_power(parse([[1, 1], [1, 0]]), n) }
-        false => { matrix_power(parse([[0, 1], [1, -1]]), -n) }
+        true => { matrix_power(parse([[1, 1], [1, 0]]), n as u32) }
+        false => { matrix_power(parse([[0, 1], [1, -1]]), -n as u32) }
     };
 
     result[0][1].clone()

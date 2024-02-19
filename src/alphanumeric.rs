@@ -1,5 +1,6 @@
 // https://www.codewars.com/kata/526dbd6c8c0eb53254000110
 
+#[allow(dead_code)]
 fn alphanumeric(password: &str) -> bool {
     !password.is_empty() && password.chars().all(char::is_alphanumeric)
 }

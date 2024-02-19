@@ -40,3 +40,5 @@ Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads
 - ![4kyu](https://github.com/bondeluke/code_wars/assets/7105195/46fa29f1-fa4e-4404-bc1f-c2545558bc10)
   - [Sum of Intervals](src/sum_intervals.rs)
   - [Snail](src/snail.rs)
+- 3kyu
+  - [The Millionth Fibonacci Kata](src/millionth_fibonacci.rs)

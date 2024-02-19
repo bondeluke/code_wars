@@ -27,5 +27,12 @@ mod alphanumeric;
 mod millionth_fibonacci;
 
 fn main() {
+    let number: u8 = 10; // Example number
+    let shifted_left = number << 2; // Left shift by 2 positions
+    let shifted_right = number >> 1; // Right shift by 1 position
+
+    println!("Original number: {}", number);
+    println!("Left shift by 2: {}", shifted_left);
+    println!("Right shift by 1: {}", shifted_right);
     println!("{}", fib(7))
 }
