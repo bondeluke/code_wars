@@ -2,9 +2,9 @@ use num_bigint::BigInt;
 
 // Cycle lengths of last two digits for any bass mod 10
 // 0 | 1 | 5 => { 1 }
-// 7 => { 4 }
-// 6 => { 5 }
-// 4 | 9 => { 10 }
+// 7         => { 4 }
+// 6         => { 5 }
+// 4 | 9     => { 10 }
 // 2 | 3 | 8 => { 20 }
 fn last_2_digits(base: u64, exp: u64) -> u64 {
     if exp == 0 { return 1; }
