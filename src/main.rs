@@ -1,4 +1,4 @@
-use crate::millionth_fibonacci::fib;
+use num_bigint::BigInt;
 
 mod to_camel_case;
 mod find_short;
@@ -25,14 +25,18 @@ mod rot13;
 mod snail;
 mod alphanumeric;
 mod millionth_fibonacci;
+mod last_digit_huge;
 
 fn main() {
-    let number: u8 = 10; // Example number
-    let shifted_left = number << 2; // Left shift by 2 positions
-    let shifted_right = number >> 1; // Right shift by 1 position
-
-    println!("Original number: {}", number);
-    println!("Left shift by 2: {}", shifted_left);
-    println!("Right shift by 1: {}", shifted_right);
-    println!("{}", fib(7))
+    println!("{}", BigInt::from(2).pow(41));
+    println!("{}", last_digit::last_digit("12", "20"));
+    println!("{}", last_digit_huge::last_digit(&vec![2, 2, 101, 2]));
+    // for n in 2..3_u64 {
+    //     println!("==={n}===");
+    //     for p in 4..45 {
+    //         let bi = BigInt::from(n).pow(p).to_string();
+    //         let last2 = &bi[bi.len() - 2..];
+    //         println!("{}: {}", p, last2)
+    //     }
+    // }
 }
