@@ -1,11 +1,5 @@
-use num_bigint::BigInt;
+use num::bigint::BigInt;
 
-// Cycle lengths of last two digits for any bass mod 10
-// 0 | 1 | 5 => { 1 }
-// 7         => { 4 }
-// 6         => { 5 }
-// 4 | 9     => { 10 }
-// 2 | 3 | 8 => { 20 }
 fn last_2_digits(base: u64, exp: u64) -> u64 {
     if exp == 0 { return 1; }
     if exp == 1 { return base; }
@@ -13,33 +7,24 @@ fn last_2_digits(base: u64, exp: u64) -> u64 {
     if base == 1 { return 1; }
     if base % 10 == 0 { return 20; }
 
-    let cycle = match base % 10 {
-        0 | 1 | 5 => { 1 }
-        7 => { 4 }
-        6 => { 5 }
-        4 | 9 => { 10 }
-        2 | 3 | 8 => { 20 }
-        _ => panic!("Uh oh!")
-    };
+    let mut b_m = base % 100;
+    let mut e_em = exp % 100;
 
-    let mut b_m = base % 20;
-    let mut e_em = exp % cycle;
-
-    if b_m == 1 {
+    if b_m == 1 { // e.g. for 101^2
         b_m += 20;
     }
 
     if e_em == 0 || e_em == 1 {
-        e_em += cycle;
+        e_em += 20;
     }
 
-    return (BigInt::from(b_m).pow(e_em as u32) % BigInt::from(100))
+    (BigInt::from(b_m).pow(e_em as u32) % BigInt::from(100))
         .to_string()
         .parse::<u64>()
-        .unwrap();
+        .unwrap()
 }
 
-// #[allow(dead_code)]
+ #[allow(dead_code)]
 pub fn last_digit(list: &[u64]) -> u64 {
     if list.is_empty() {
         return 1;
@@ -88,6 +73,7 @@ mod tests {
             (vec![0, 0, 0, 0, 1, 0, 2, 2, 1, 0], 1),
             (vec![2, 2, 1, 1, 2, 1, 1, 0, 2, 0], 4),
             (vec![652072, 185919, 902109, 569251, 333285, 196192, 998532, 761616, 308860, 718276], 8),
+            (vec![448253, 700211, 553808, 566110, 732971, 36894, 393888, 334711, 153213, 433768], 3),
         ] {
             do_test(&a, b);
         }
