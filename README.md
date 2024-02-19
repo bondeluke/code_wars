@@ -7,13 +7,11 @@ So I joined [CodeWars](https://www.codewars.com/), an online platform designed t
 - **Kata:** The name for a programming challenge on CodeWars.
 - **Kyu:** Denotes the difficulty level of a Kata. The lower the kyu number, the higher the difficulty level.
 
-You can find my CodeWars profile [here](https://www.codewars.com/users/bondeluke). 
-
-![CodeWarsRank](https://www.codewars.com/users/bondeluke/badges/small)
-
-This repository exists to document my solutions and track my progress. 
+You can find my CodeWars profile [here](https://www.codewars.com/users/bondeluke). This repository exists to document my solutions and track my progress. 
 
 ## Completed Kata
+![CodeWarsRank](https://www.codewars.com/users/bondeluke/badges/small)
+
 Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads you to my source code, which includes a hyperlink to the problem statement, my solution, and associated unit tests.
 - ![8kyu](https://github.com/bondeluke/code_wars/assets/7105195/406eceb7-a588-4585-a2c9-5e0d48192115)
   - [Even or Odd](src/even_or_odd.rs)
