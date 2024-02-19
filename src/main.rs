@@ -29,14 +29,4 @@ mod last_digit_huge;
 
 fn main() {
     println!("{}", BigInt::from(2).pow(41));
-    println!("{}", last_digit::last_digit("12", "20"));
-    println!("{}", last_digit_huge::last_digit(&vec![2, 2, 101, 2]));
-    for n in 2..89 {
-        // println!("==={n}===");
-        for p in 11..12 {
-            let bi = BigInt::from(n).pow(p).to_string();
-            let last2 = &bi[bi.len() - 2..];
-            println!("{}: {}", n, last2)
-        }
-    }
 }

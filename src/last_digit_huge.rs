@@ -1,44 +1,16 @@
-use num::bigint::BigInt;
+// https://www.codewars.com/kata/5518a860a73e708c0a000027
 
-fn last_2_digits(base: u64, exp: u64) -> u64 {
-    if exp == 0 { return 1; }
-    if exp == 1 { return base; }
-    if base == 0 { return 0; }
-    if base == 1 { return 1; }
-    if base % 10 == 0 { return 20; }
+#[allow(dead_code)]
+fn last_digit(lst: &[u64]) -> u64 {
+    let f = |x, m| std::cmp::min(x % m + m, x);
 
-    let mut b_m = base % 100;
-    let mut e_em = exp % 100;
-
-    if b_m == 1 { // e.g. for 101^2
-        b_m += 20;
-    }
-
-    if e_em == 0 || e_em == 1 {
-        e_em += 20;
-    }
-
-    (BigInt::from(b_m).pow(e_em as u32) % BigInt::from(100))
-        .to_string()
-        .parse::<u64>()
-        .unwrap()
-}
-
- #[allow(dead_code)]
-pub fn last_digit(list: &[u64]) -> u64 {
-    if list.is_empty() {
-        return 1;
-    }
-    let mut stack = list.to_vec();
-    let mut exp = stack.pop().unwrap();
-    let mut base = stack.pop().unwrap();
-    let mut last2 = last_2_digits(base, exp);
-    while !stack.is_empty() {
-        exp = last2;
-        base = stack.pop().unwrap();
-        last2 = last_2_digits(base, exp);
-    }
-    last2 % 10
+    lst.into_iter()
+        .rev()
+        .fold(1u64, |acc, &next| {
+            let exp = f(acc, 4);     // Because a^k = a^(4n+k) [mod 10]
+            let base = f(next, 20);  // Still not quite sure why base pattern repeats every 20
+            base.pow(exp as u32)
+        }) % 10
 }
 
 #[cfg(test)]
