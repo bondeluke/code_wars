@@ -9,6 +9,8 @@ So I joined [CodeWars](https://www.codewars.com/), an online platform designed t
 
 You can find my CodeWars profile [here](https://www.codewars.com/users/bondeluke). This repository exists to document my solutions and track my progress. 
 
+![CodeWarsRank](https://www.codewars.com/users/bondeluke/badges/large)
+
 ## Completed Kata
 Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads you to my source code, which includes a hyperlink to the problem statement, my solution, and associated unit tests.
 - ![8kyu](https://github.com/bondeluke/code_wars/assets/7105195/406eceb7-a588-4585-a2c9-5e0d48192115)
