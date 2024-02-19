@@ -1,12 +1,17 @@
 use num_bigint::BigInt;
-use num_traits::{One, Zero};
+use num_traits::{Zero};
 
-// Define a 2x2 matrix type
 type Matrix = [[BigInt; 2]; 2];
 
-// Multiply two matrices
-fn matrix_multiply(a: &Matrix, b: &Matrix) -> Matrix {
-    let mut result = [[BigInt::zero(), BigInt::zero()], [BigInt::zero(), BigInt::zero()]];
+fn parse(m: [[i32; 2]; 2]) -> Matrix {
+    [
+        [BigInt::from(m[0][0]), BigInt::from(m[0][1])],
+        [BigInt::from(m[1][0]), BigInt::from(m[1][1])]
+    ]
+}
+
+fn multiply(a: &Matrix, b: &Matrix) -> Matrix {
+    let mut result = parse([[0, 0], [0, 0]]);
     for i in 0..2 {
         for j in 0..2 {
             for k in 0..2 {
@@ -19,27 +24,28 @@ fn matrix_multiply(a: &Matrix, b: &Matrix) -> Matrix {
 
 // Compute the power of a matrix
 fn matrix_power(mut m: Matrix, mut exp: i32) -> Matrix {
-    let mut result = [[BigInt::zero(), BigInt::zero()], [BigInt::zero(), BigInt::zero()]];
-    result[0][0] = BigInt::one();
-    result[1][1] = BigInt::one();
+    let mut result = parse([[1, 0], [1, 0]]);
     while exp > 0 {
         if exp % 2 == 1 {
-            result = matrix_multiply(&result, &m);
+            result = multiply(&result, &m);
         }
-        m = matrix_multiply(&m, &m);
+        m = multiply(&m, &m);
         exp /= 2;
     }
     result
 }
 
 // Compute the n-th Fibonacci number using matrix exponentiation
+// https://rosettacode.org/wiki/Fibonacci_matrix-exponentiation
 pub fn fib(n: i32) -> BigInt {
-    if n <= 0 {
-        return BigInt::zero();
-    }
-    let matrix = [[BigInt::one(), BigInt::one()], [BigInt::one(), BigInt::zero()]];
-    let result = matrix_power(matrix, n - 1);
-    result[0][0].clone()
+    if n == 0 { return BigInt::zero(); }
+
+    let result = match n > 0 {
+        true => { matrix_power(parse([[1, 1], [1, 0]]), n) }
+        false => { matrix_power(parse([[0, 1], [1, -1]]), -n) }
+    };
+
+    result[0][1].clone()
 }
 
 #[cfg(test)]

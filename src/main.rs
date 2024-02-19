@@ -27,5 +27,5 @@ mod alphanumeric;
 mod millionth_fibonacci;
 
 fn main() {
-    println!("{}", fib(2000000))
+    println!("{}", fib(7))
 }
