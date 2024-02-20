@@ -27,6 +27,7 @@ mod alphanumeric;
 mod millionth_fibonacci;
 mod last_digit_huge;
 mod product_fib;
+mod sum_by_factors;
 
 fn main() {
     println!("{}", BigInt::from(2).pow(41));
