@@ -1,38 +1,27 @@
 // https://www.codewars.com/kata/54d496788776e49e6b00052f/train/rust
 
+fn prime_factors(mut n: u64) -> Vec<i64> {
+    let mut pf: Vec<i64> = Vec::new();
+    let mut d = 2;
+    while n > 1 {
+        if n % d == 0 { pf.push(d as i64); }
+        while n % d == 0 { n /= d; }
+        d += 1;
+    }
+    pf
+}
+
 fn sum_of_divided(l: Vec<i64>) -> Vec<(i64, i64)> {
-    let mut result: Vec<(i64, i64)> = Vec::new();
-    if l.is_empty() {
-        return result;
-    }
+    let mut primes: Vec<i64> = l.iter()
+        .flat_map(|&n| prime_factors(n.abs() as u64))
+        .collect();
 
-    let largest = l.iter()
-        .max_by_key(|x| x.abs()).unwrap()
-        .abs() as usize + 1;
+    primes.sort();
+    primes.dedup();
 
-    let mut is_prime = vec![true; largest];
-
-    for p in 2..largest {
-        if !is_prime[p] { continue; }
-
-        for x in (p..largest).step_by(p) {
-            is_prime[x] = false;
-        }
-
-        let mut sum = 0;
-        let mut flip = false;
-        for n in &l {
-            if n.abs() % (p as i64) == 0 {
-                flip = true;
-                sum += n
-            }
-        }
-        if flip {
-            result.push((p as i64, sum))
-        }
-    }
-
-    result
+    primes.iter()
+        .map(|&p| (p, l.iter().filter(|&n| n % p == 0).sum()))
+        .collect()
 }
 
 fn testing(l: Vec<i64>, exp: Vec<(i64, i64)>) -> () {
