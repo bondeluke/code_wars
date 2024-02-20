@@ -1,7 +1,7 @@
 // https://www.codewars.com/kata/517abf86da9663f1d2000003
 
 #[allow(dead_code)]
-pub fn to_camel_case(text: &str) -> String {
+fn to_camel_case(text: &str) -> String {
     text.split(['-', '_'])
         .enumerate()
         .map(|(i, word)| match i {

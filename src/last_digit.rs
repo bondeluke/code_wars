@@ -14,7 +14,7 @@
 //   9     |  1, 9
 
 #[allow(dead_code)]
-pub fn last_digit(base: &str, exp: &str) -> i32 {
+fn last_digit(base: &str, exp: &str) -> i32 {
     if exp == "0" { return 1; }
 
     let exp_mod_100 = match exp.len() {

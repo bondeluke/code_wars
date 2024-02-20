@@ -1,7 +1,7 @@
 // https://www.codewars.com/kata/54d512e62a5e54c96200019e
 
 #[allow(dead_code)]
-pub fn prime_factors(n: i64) -> String {
+fn prime_factors(n: i64) -> String {
     let mut factors: Vec<(u64, u8)> = Vec::new();
     let mut number: u64 = n as u64;
     let sqrt = (n as f64).sqrt() as u64;

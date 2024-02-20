@@ -11,6 +11,7 @@ fn prime_factors(mut n: u64) -> Vec<i64> {
     pf
 }
 
+#[allow(dead_code)]
 fn sum_of_divided(l: Vec<i64>) -> Vec<(i64, i64)> {
     let mut primes: Vec<i64> = l.iter()
         .flat_map(|&n| prime_factors(n.abs() as u64))
@@ -24,12 +25,17 @@ fn sum_of_divided(l: Vec<i64>) -> Vec<(i64, i64)> {
         .collect()
 }
 
-fn testing(l: Vec<i64>, exp: Vec<(i64, i64)>) -> () {
-    assert_eq!(sum_of_divided(l), exp)
-}
+#[cfg(test)]
+mod tests{
+    use crate::sum_by_factors::sum_of_divided;
 
-#[test]
-fn basics_sum_of_divided() {
-    testing(vec![12, 15], vec![(2, 12), (3, 27), (5, 15)]);
-    testing(vec![15, 21, 24, 30, 45], vec![(2, 54), (3, 135), (5, 90), (7, 21)]);
+    fn do_test(l: Vec<i64>, exp: Vec<(i64, i64)>) -> () {
+        assert_eq!(sum_of_divided(l), exp)
+    }
+
+    #[test]
+    fn basics_sum_of_divided() {
+        do_test(vec![12, 15], vec![(2, 12), (3, 27), (5, 15)]);
+        do_test(vec![15, 21, 24, 30, 45], vec![(2, 54), (3, 135), (5, 90), (7, 21)]);
+    }
 }

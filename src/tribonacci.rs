@@ -1,7 +1,7 @@
 // https://www.codewars.com/kata/556deca17c58da83c00002db
 
 #[allow(dead_code)]
-pub fn tribonacci(signature: &[f64; 3], n: usize) -> Vec<f64> {
+fn tribonacci(signature: &[f64; 3], n: usize) -> Vec<f64> {
     let mut new_vec = signature.to_vec();
 
     // Set the vector to the size we need.

@@ -1,7 +1,7 @@
 // https://www.codewars.com/kata/545cedaa9943f7fe7b000048
 
 #[allow(dead_code)]
-pub fn is_pangram(s: &str) -> bool {
+fn is_pangram(s: &str) -> bool {
     let word = s.to_lowercase();
     ('a'..='z').all(|c| word.contains(c))
 }

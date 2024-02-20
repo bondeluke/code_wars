@@ -44,7 +44,7 @@ fn matrix_power(mut m: Matrix, mut exp: u32) -> Matrix {
 // Compute the n-th Fibonacci number using matrix exponentiation
 // https://rosettacode.org/wiki/Fibonacci_matrix-exponentiation
 #[allow(dead_code)]
-pub fn fib(n: i32) -> BigInt {
+fn fib(n: i32) -> BigInt {
     if n == 0 { return BigInt::zero(); }
 
     let result = match n > 0 {
