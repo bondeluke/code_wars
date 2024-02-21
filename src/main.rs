@@ -29,6 +29,7 @@ mod last_digit_huge;
 mod product_fib;
 mod sum_by_factors;
 mod digital_root;
+mod format_duration;
 
 fn main() {
     println!("{}", BigInt::from(2).pow(41));
