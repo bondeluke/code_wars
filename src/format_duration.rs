@@ -1,23 +1,18 @@
 // https://chat.openai.com/c/05bda066-aa51-466d-8fc1-b8cb8fe7dde4
 
-fn format_duration(mut seconds: u64) -> String {
-    let mut counts: Vec<(&str, u64)> = Vec::new();
-    for (label, duration) in [
-        ("year", 365 * 24 * 60 * 60),
-        ("day", 24 * 60 * 60),
-        ("hour", 60 * 60),
-        ("minute", 60),
-        ("second", 1)
-    ] {
-        let count = seconds / duration;
-        if count > 0 {
-            counts.push((label, count));
-            seconds %= duration;
-        }
-    }
-
-    match counts.iter()
-        .map(|&(l, d)| format!("{} {}{}", d, l, if d > 1 { "s" } else { "" }))
+fn format_duration(seconds: u64) -> String {
+    match [
+        ("year", 60 * 60 * 24 * 365, 100000),
+        ("day", 60 * 60 * 24, 365),
+        ("hour", 60 * 60, 24),
+        ("minute", 60, 60),
+        ("second", 1, 60),
+    ].iter()
+        .filter_map(|(unit, duration, modulo)| match seconds / duration % modulo {
+            0 => None,
+            1 => Some(format!("1 {unit}")),
+            c => Some(format!("{c} {unit}s")),
+        })
         .collect::<Vec<String>>()
         .as_slice()
     {
