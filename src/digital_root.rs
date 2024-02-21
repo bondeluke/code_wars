@@ -1,5 +1,6 @@
 // https://www.codewars.com/kata/541c8630095125aba6000c00
 
+#[allow(dead_code)]
 fn digital_root(n: i64) -> i64 {
     match n.to_string().chars().map(|c| c.to_digit(10).unwrap()).sum::<u32>() {
         r if r < 10 => r as i64,

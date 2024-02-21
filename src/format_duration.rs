@@ -1,5 +1,6 @@
 // https://chat.openai.com/c/05bda066-aa51-466d-8fc1-b8cb8fe7dde4
 
+#[allow(dead_code)]
 fn format_duration(seconds: u64) -> String {
     match [
         ("year", 60 * 60 * 24 * 365, 100000),

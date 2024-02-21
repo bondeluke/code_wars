@@ -1,5 +1,6 @@
 // https://www.codewars.com/kata/55983863da40caa2c900004e
 
+#[allow(dead_code)]
 fn next_bigger_number(n: u64) -> Option<u64> {
     let mut digits: Vec<u64> = n
         .to_string()
