@@ -4,68 +4,51 @@ fn to_xy(n: i8) -> (i8, i8) {
     (n % 3, n / 3)
 }
 
-fn to_n(xy: (i8, i8)) -> i8 {
-    xy.1 * 3 + xy.0 % 3
+fn to_n(x: i8, y: i8) -> i8 {
+    y * 3 + x % 3
 }
 
-fn swap_xy(do_it: bool, xy: (i8, i8)) -> (i8, i8) {
-    if do_it {
-        (xy.1, xy.0)
-    } else {
-        xy
-    }
-}
-
-fn corner_options(state: &[bool; 9], i: i8) -> Vec<i8> {
+fn corner_options(visited: &[bool; 9], i: i8) -> Vec<i8> {
     let (x, y) = to_xy(i);
     let xs = if x == 0 { 1 } else { -1 };
     let ys = if y == 0 { 1 } else { -1 };
-    let n1 = to_n((x + xs, y));
-    let n2 = to_n((x + xs * 2, y));
-    let n3 = to_n((x, y + ys));
-    let n4 = to_n((x, y + ys * 2));
-    let n5 = to_n((x + xs, y + ys));
-    let n6 = to_n((x + xs * 2, y + ys * 2));
-    let n7 = to_n((x + xs * 2, y + ys));
-    let n8 = to_n((x + xs, y + ys * 2));
+    let n1 = to_n(x + xs, y);
+    let n2 = to_n(x + xs * 2, y);
+    let n3 = to_n(x, y + ys);
+    let n4 = to_n(x, y + ys * 2);
+    let n5 = to_n(x + xs, y + ys);
+    let n6 = to_n(x + xs * 2, y + ys * 2);
+    let n7 = to_n(x + xs * 2, y + ys);
+    let n8 = to_n(x + xs, y + ys * 2);
     let mut result = vec![n1, n3, n5, n7, n8];
-    if state[n1 as usize] { result.push(n2) }
-    if state[n3 as usize] { result.push(n4) }
-    if state[n5 as usize] { result.push(n6) }
+    if visited[n1 as usize] { result.push(n2) }
+    if visited[n3 as usize] { result.push(n4) }
+    if visited[n5 as usize] { result.push(n6) }
 
     result.sort();
-    result.into_iter().filter(|&k| !state[k as usize]).collect()
+    result.iter().filter(|&&k| !visited[k as usize]).collect()
 }
 
 
 fn edge_options(visited: &[bool; 9], i: i8) -> Vec<i8> {
-    let (mut x, mut y) = to_xy(i);
+    let (x, y) = to_xy(i);
     let s = if x == 0 || y == 0 { 1 } else { -1 };
-    let swap = y == 1;
-    if swap {
-        (x, y) = (y, x);
+    let mut result: Vec<i8> = (0..9_i8).collect();
+
+    if x == 1 && !visited[to_n(x, y + s) as usize] {
+        let remove_me = to_n(x, y + s * 2);
+        result.retain(|&k| k != remove_me);
     }
-    let n1 = to_n(swap_xy(swap, (x, y + s)));
-    let n2 = to_n(swap_xy(swap, (x, y + s * 2)));
-    let n3 = to_n(swap_xy(swap, (x - 1, y)));
-    let n4 = to_n(swap_xy(swap, (x - 1, y + s)));
-    let n5 = to_n(swap_xy(swap, (x - 1, y + s * 2)));
-    let n6 = to_n(swap_xy(swap, (x + 1, y)));
-    let n7 = to_n(swap_xy(swap, (x + 1, y + s)));
-    let n8 = to_n(swap_xy(swap, (x + 1, y + s * 2)));
-    let mut result = [n1, n3, n4, n5, n6, n7, n8].to_vec();
-    if visited[n1 as usize] {
-        result.push(n2)
+    if y == 1 && !visited[to_n(x + s, y) as usize] {
+        let remove_me = to_n(x + s * 2, y);
+        result.retain(|&k| k != remove_me);
     }
-    result.sort();
-    result.into_iter().filter(|&k| !visited[k as usize]).collect()
+
+    result.iter().filter(|&&k| !visited[k as usize]).collect()
 }
 
 fn center_options(visited: &[bool; 9]) -> Vec<i8> {
-    visited.into_iter().enumerate()
-        .filter(|&(i, p)| *p)
-        .map(|(i, p)| i as i8).
-        collect()
+    (0..9_i8).filter(|&i| !visited[i as usize]).collect()
 }
 
 fn count_patterns(from: char, length: u8) -> u64 {
@@ -84,7 +67,7 @@ fn count_patterns(from: char, length: u8) -> u64 {
         visited[current] = true;
     }
 
-    println!("hasdfdello");
+    println!("hello");
     0
 }
 
