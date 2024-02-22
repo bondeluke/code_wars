@@ -31,6 +31,7 @@ mod sum_by_factors;
 mod digital_root;
 mod format_duration;
 mod next_bigger_number;
+mod screen_locking_patterns;
 
 fn main() {
     println!("{}", BigInt::from(2).pow(41));
