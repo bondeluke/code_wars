@@ -8,8 +8,8 @@ fn to_n(x: i8, y: i8) -> i8 {
     y * 3 + x % 3
 }
 
-fn corner_options(visited: &[bool; 9], i: i8) -> Vec<i8> {
-    let (x, y) = to_xy(i);
+fn corner_options(visited: &[bool; 9], current: i8) -> Vec<u8> {
+    let (x, y) = to_xy(current);
     let xs = if x == 0 { 1 } else { -1 };
     let ys = if y == 0 { 1 } else { -1 };
     let n1 = to_n(x + xs, y);
@@ -26,12 +26,15 @@ fn corner_options(visited: &[bool; 9], i: i8) -> Vec<i8> {
     if visited[n5 as usize] { result.push(n6) }
 
     result.sort();
-    result.iter().filter(|&&k| !visited[k as usize]).collect()
+    result.iter()
+        .filter(|&&i| !visited[i as usize])
+        .map(|&i| i as u8)
+        .collect()
 }
 
 
-fn edge_options(visited: &[bool; 9], i: i8) -> Vec<i8> {
-    let (x, y) = to_xy(i);
+fn edge_options(visited: &[bool; 9], current: i8) -> Vec<u8> {
+    let (x, y) = to_xy(current);
     let s = if x == 0 || y == 0 { 1 } else { -1 };
     let mut result: Vec<i8> = (0..9_i8).collect();
 
@@ -44,31 +47,51 @@ fn edge_options(visited: &[bool; 9], i: i8) -> Vec<i8> {
         result.retain(|&k| k != remove_me);
     }
 
-    result.iter().filter(|&&k| !visited[k as usize]).collect()
+    result.iter()
+        .filter(|&&i| !visited[i as usize])
+        .map(|&i| i as u8)
+        .collect()
 }
 
-fn center_options(visited: &[bool; 9]) -> Vec<i8> {
-    (0..9_i8).filter(|&i| !visited[i as usize]).collect()
+fn center_options(visited: &[bool; 9]) -> Vec<u8> {
+    (0..9_i8)
+        .filter(|&i| !visited[i as usize])
+        .map(|i| i as u8)
+        .collect()
 }
 
-fn count_patterns(from: char, length: u8) -> u64 {
-    let mut visited: [bool; 9] = [false; 9];
-    let mut current = (from as usize) - ('A' as usize);
-    visited[current] = true;
+fn dfs(visited: &mut [bool; 9], current: u8, length: u8, count: &mut u64) {
+    visited[current as usize] = true;
 
-    while visited.into_iter().filter(|&v| v).count() < length as usize {
+    if (visited.into_iter().filter(|v| **v).count() as u8) == length {
+        *count += 1
+    } else {
         let options = match current {
             0 | 2 | 6 | 8 => corner_options(&visited, current as i8),
             1 | 3 | 5 | 7 => edge_options(&visited, current as i8),
             4 => center_options(&visited),
             _ => panic!("Unexpected current value '{current}'!")
         };
-        current = *(options.first().unwrap()) as usize;
-        visited[current] = true;
+        for option in options {
+            dfs(visited, option, length, count)
+        }
     }
 
-    println!("hello");
-    0
+    visited[current as usize] = false;
+}
+
+fn count_patterns(from: char, length: u8) -> u64 {
+    let mut visited: [bool; 9] = [false; 9];
+    let mut count: u64 = 0;
+    let current = (from as u8) - ('A' as u8);
+
+    if length == 0 || length >= 10 {
+        return 0;
+    }
+
+    dfs(&mut visited, current, length, &mut count);
+
+    count
 }
 
 #[cfg(test)]
