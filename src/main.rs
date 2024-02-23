@@ -32,6 +32,7 @@ mod digital_root;
 mod format_duration;
 mod next_bigger_number;
 mod screen_locking_patterns;
+mod make_a_spiral;
 
 fn main() {
     println!("{}", BigInt::from(2).pow(41));

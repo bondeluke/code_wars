@@ -48,4 +48,5 @@ Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads
   - [The Millionth Fibonacci Kata](src/millionth_fibonacci.rs)
   - [Last digit of a huge number](src/last_digit_huge.rs)
   - [Screen Locking Patterns](src/screen_locking_patterns.rs)
+  - [Make a spiral](src/make_a_spiral.rs)
 

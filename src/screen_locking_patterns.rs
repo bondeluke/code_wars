@@ -73,6 +73,7 @@ fn dfs(visited: &mut [bool; 9], current: u8, length: u8) -> u64 {
     count
 }
 
+#[allow(dead_code)]
 fn count_patterns(from: char, length: u8) -> u64 {
     let mut visited: [bool; 9] = [false; 9];
     let current = (from as u8) - ('A' as u8);
