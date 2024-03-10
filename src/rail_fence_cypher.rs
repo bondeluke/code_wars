@@ -27,37 +27,44 @@ fn decode_rail_fence_cipher(text: &str, num_rails: usize) -> String {
     let half_cycles = length / half_cycle_len;
 
     let rail_len: Vec<usize> = (0..num_rails).map(|rail| {
-        match rail {
-            0 => (length + cycle_len) / cycle_len,
-            _ if rail == num_rails - 1 => (length + half_cycle_len) / cycle_len,
+        let (step, c_len) = match rail {
+            0 => (cycle_len, cycle_len),
+            _ if rail == num_rails - 1 => (half_cycle_len, cycle_len),
             _ => {
                 let step = match half_cycles % 2 == 0 {
                     true => half_cycle_len - rail - 1,
                     false => half_cycle_len + rail - num_rails - 1,
                 };
-                (length + step) / half_cycle_len
+                (step, half_cycle_len)
             }
-        }
+        };
+        (length + step) / c_len
     }).collect();
 
-    let mut sections = vec![0_usize; num_rails];
+    let mut sections: Vec<usize> = (0..num_rails)
+        .map(|rail| rail_len[..rail].iter().sum())
+        .collect();
+
     let mut decoded_text = String::new();
 
-    let mut rail_index = 0_i8;
-    let mut step = 1_i8;
+    let mut rail = 0;
+    let mut inc = true;
     while decoded_text.len() < length {
-        let index = sections[rail_index as usize];
+        let index = sections[rail];
         decoded_text.push_str(&text[index..=index]);
-        sections[rail_index as usize] += 1;
-        if rail_index == 0 {
-            step = 1;
+        sections[rail] += 1;
+        if rail == 0 {
+            inc = true;
         }
-        if rail_index == (num_rails - 1) as i8 {
-            step = -1;
+        if rail == num_rails - 1 {
+            inc = false
         }
-        rail_index += step;
+        if inc {
+            rail += 1;
+        } else {
+            rail -= 1;
+        }
     }
-    println!();
 
     return decoded_text;
 }
