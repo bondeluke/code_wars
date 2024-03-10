@@ -35,13 +35,5 @@ mod rectangle_rotation;
 mod rail_fence_cypher;
 
 fn main() {
-    for a in 0..20 { print!("{:<3} ", a); }
-    println!();
-    for b in 1..20 {
-        print!("{:<3} ", b);
-        for a in 1..=b {
-            print!("{:<3} ", rectangle_rotation::rectangle_rotation(a, b));
-        }
-        println!()
-    }
+    println!("Hello!")
 }

@@ -2,7 +2,8 @@
 
 use std::cmp::{max, min};
 
-pub fn rectangle_rotation(a: i32, b: i32) -> i32 {
+#[allow(dead_code)]
+fn rectangle_rotation(a: i32, b: i32) -> i32 {
     let a_intercept = a as f64 * 2.0_f64.sqrt() / 2.0;
     let b_intercept = b as f64 * 2.0_f64.sqrt() / 2.0;
 
