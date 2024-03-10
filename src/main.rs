@@ -32,6 +32,7 @@ mod next_bigger_number;
 mod screen_locking_patterns;
 mod make_a_spiral;
 mod rectangle_rotation;
+mod rail_fence_cypher;
 
 fn main() {
     for a in 0..20 { print!("{:<3} ", a); }
