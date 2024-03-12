@@ -33,6 +33,7 @@ mod screen_locking_patterns;
 mod make_a_spiral;
 mod rectangle_rotation;
 mod rail_fence_cypher;
+mod large_factorials;
 
 fn main() {
     println!("Hello!")

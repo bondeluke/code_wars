@@ -45,6 +45,7 @@ Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads
   - [Human-readable duration format](src/format_duration.rs)
   - [Next bigger number with the same digits](src/next_bigger_number.rs)
   - [Rectangle Rotation](src/rectangle_rotation.rs)
+  - [Large Factorials](src/large_factorials.rs)
 - ![3kyu](https://github.com/bondeluke/code_wars/assets/7105195/327f8739-f219-44b7-918b-ec68c6852699)
   - [The Millionth Fibonacci Kata](src/millionth_fibonacci.rs)
   - [Last digit of a huge number](src/last_digit_huge.rs)
