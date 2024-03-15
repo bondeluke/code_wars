@@ -35,6 +35,7 @@ mod rectangle_rotation;
 mod rail_fence_cypher;
 mod large_factorials;
 mod sudoku_solver;
+mod tree_by_levels;
 
 fn main() {
     println!("{}", "hello")
