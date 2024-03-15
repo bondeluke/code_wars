@@ -34,7 +34,8 @@ mod make_a_spiral;
 mod rectangle_rotation;
 mod rail_fence_cypher;
 mod large_factorials;
+mod sudoku_solver;
 
 fn main() {
-    println!("Hello!")
+    println!("{}", "hello")
 }
