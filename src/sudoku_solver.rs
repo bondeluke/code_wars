@@ -2,22 +2,19 @@
 
 #[allow(dead_code)]
 fn sudoku(puzzle: &mut [[u8; 9]; 9]) {
-    let mut solved = false;
-    while !solved {
-        solved = true;
+    while (0..81).any(|n| puzzle[n / 9][n % 9] == 0) {
         for n in 0..81 {
             let (r, c) = (n / 9, n % 9);
             if puzzle[r][c] != 0 { continue; }
-            solved = false;
 
-            let mut neighbors = [0; 27];
+            let mut peers = [0; 27];
             for x in 0..9 {
-                neighbors[x] = puzzle[r][x];
-                neighbors[x + 9] = puzzle[x][c];
-                neighbors[x + 18] = puzzle[(r / 3) * 3 + x / 3][(c / 3) * 3 + x % 3];
+                peers[x] = puzzle[r][x];
+                peers[x + 9] = puzzle[x][c];
+                peers[x + 18] = puzzle[(r / 3) * 3 + x / 3][(c / 3) * 3 + x % 3];
             }
 
-            if let [value] = (1..=9).filter(|v| !neighbors.contains(v)).collect::<Vec<u8>>()[..] {
+            if let [value] = (1..=9).filter(|v| !peers.contains(v)).collect::<Vec<u8>>()[..] {
                 puzzle[r][c] = value;
             }
         }
