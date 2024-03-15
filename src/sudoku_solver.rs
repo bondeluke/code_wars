@@ -1,39 +1,24 @@
 // https://www.codewars.com/kata/5296bc77afba8baa690002d7
-use itertools::iproduct;
 
 #[allow(dead_code)]
 fn sudoku(puzzle: &mut [[u8; 9]; 9]) {
-    // options[y][x][k] tells us whether value k + 1 can be at position (x, y)
-    let mut options = [[[false; 9]; 9]; 9];
-    for (y, x, k) in iproduct!(0..9, 0..9, 0..9) {
-        options[y][x][k] = puzzle[y][x] == 0 || puzzle[y][x] == ((k + 1) as u8)
-    }
+    let mut solved = false;
+    while !solved {
+        solved = true;
+        for n in 0..81 {
+            let (r, c) = (n / 9, n % 9);
+            if puzzle[r][c] != 0 { continue; }
+            solved = false;
 
-    // Calculate cell groups: squares, rows, columns
-    let cell_groups = (0..9).map(|a| (0..9).map(|b| ((a % 3) * 3 + b % 3, (a / 3) * 3 + b / 3)).collect())
-        .chain((0..9).map(|y| (0..9).map(|x| (x, y)).collect()))
-        .chain((0..9).map(|x| (0..9).map(|y| (x, y)).collect()))
-        .collect::<Vec<Vec<(usize, usize)>>>();
-
-    while puzzle.iter().flat_map(|r| r.iter()).filter(|&&v| v == 0).count() > 0 {
-        // Cross out options by cell group
-        for group in cell_groups.as_slice() {
-            for &(x, y) in group {
-                let cell_value = puzzle[y][x];
-                if cell_value != 0 {
-                    for &(x2, y2) in group {
-                        options[y2][x2][cell_value as usize - 1] = (x, y) == (x2, y2);
-                    }
-                }
+            let mut neighbors = [0; 27];
+            for x in 0..9 {
+                neighbors[x] = puzzle[r][x];
+                neighbors[x + 9] = puzzle[x][c];
+                neighbors[x + 18] = puzzle[(r / 3) * 3 + x / 3][(c / 3) * 3 + x % 3];
             }
-        }
 
-        // Update puzzle[y][x] for which there is only 1 option
-        for (x, y) in iproduct!(0..9, 0..9) {
-            if let [value] = options[y][x].iter().enumerate()
-                .filter_map(|(i, &x)| if x { Some(i) } else { None })
-                .collect::<Vec<usize>>().as_slice() {
-                puzzle[y][x] = (value + 1) as u8;
+            if let [value] = (1..=9).filter(|v| !neighbors.contains(v)).collect::<Vec<u8>>()[..] {
+                puzzle[r][c] = value;
             }
         }
     }
