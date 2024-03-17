@@ -5,7 +5,7 @@ pub fn stream() -> impl Iterator<Item=u32> {
 }
 
 struct PrimeIterator {
-    index: usize,
+    cursor: i32,
     pi: usize,
     primes: Vec<u32>,
 }
@@ -13,17 +13,17 @@ struct PrimeIterator {
 impl PrimeIterator {
     fn new() -> Self {
         Self {
-            index: 0,
-            pi: 0,
-            primes: vec![2, 3, 5, 7, 11, 13, 17, 19, 23]
+            cursor: -1,
+            pi: 1,
+            primes: vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
         }
     }
 
-    fn expand(&mut self) {
+    fn extend(&mut self) {
         const RANGE: usize = 8;
         let p1 = self.primes[self.pi];
         let p2 = self.primes[self.pi + RANGE];
-        let min = (p1 * p1 + 2) as usize;
+        let min = (p1 * p1) as usize;
         let max = (p2 * p2) as usize;
 
         let mut sieve = vec![true; max - min + 1];
@@ -48,7 +48,7 @@ impl PrimeIterator {
         let len2 = self.primes.len();
         self.pi += RANGE;
 
-        println!("{:>5} primes found in range {:>8} - {:<8} ({:>6} numbers checked)", len2 - len, min, max, max - min);
+        println!("{:>5} primes found in range {:>3}^2 = {:>8} - {:<8} = {:>3}^2 ({:>6} numbers checked)", len2 - len,p1, min, max, p2, max - min);
     }
 }
 
@@ -56,13 +56,13 @@ impl Iterator for PrimeIterator {
     type Item = u32;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.index == self.primes.len() {
-            self.expand();
+        self.cursor += 1;
+
+        if self.cursor as usize == self.primes.len() {
+            self.extend();
         }
 
-        let result = Some(self.primes[self.index]);
-        self.index += 1;
-        return result;
+        Some(self.primes[self.cursor as usize])
     }
 }
 
