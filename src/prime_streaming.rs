@@ -11,7 +11,7 @@ pub fn stream() -> impl Iterator<Item=u32> {
         }) as usize
     };
 
-    let limit = 20_000_003;
+    let limit = 15_486_041;
     let mut sieve = vec![true; n_to_i(limit) + 1];
 
     [2, 3].into_iter().chain(
@@ -24,9 +24,8 @@ pub fn stream() -> impl Iterator<Item=u32> {
 
                 if is_prime {
                     if n < 65536 {
-                        for x in (n..limit / 6)
-                            .step_by((n * 2) as usize)
-                            .filter(|&x| x % 6 == 1 || x % 6 == 5) {
+                        for x in (n..limit / n - 3).step_by(6).interleave((n..limit / n - 3).step_by(6))
+                            .zip([0, if c == -1 { 2 } else { 4 }].into_iter().cycle()).map(|(k, c)| n * (k + c)) {
                             sieve[n_to_i(x)] = false
                         }
                     }
