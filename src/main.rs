@@ -1,5 +1,5 @@
 use std::time::Instant;
-use crate::prime_streaming::stream;
+use crate::prime_streaming_nc17::stream;
 
 mod to_camel_case;
 mod find_short;
@@ -41,6 +41,7 @@ mod sudoku_solver;
 mod tree_by_levels;
 mod prime_streaming;
 mod order_weight;
+mod prime_streaming_nc17;
 
 fn main() {
     let start_time = Instant::now();

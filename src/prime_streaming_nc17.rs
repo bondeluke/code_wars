@@ -1,12 +1,11 @@
-// https://www.codewars.com/kata/5519a584a73e70fa570005f5
+// https://www.codewars.com/kata/59122604e5bc240817000016
 
-#[allow(dead_code)]
-fn stream() -> impl Iterator<Item=u32> {
+pub fn stream() -> impl Iterator<Item=u32> {
     PrimeIterator::new()
 }
 
 struct PrimeIterator {
-    i: usize,
+    index: usize,
     pi: usize,
     primes: Vec<u32>,
 }
@@ -14,32 +13,42 @@ struct PrimeIterator {
 impl PrimeIterator {
     fn new() -> Self {
         Self {
-            i: 0,
+            index: 0,
             pi: 0,
-            primes: vec![2, 3, 5, 7, 11, 13, 17, 19, 23],
+            primes: vec![2, 3, 5, 7, 11, 13, 17, 19, 23]
         }
     }
 
     fn expand(&mut self) {
-        const RANGE : usize = 8;
+        const RANGE: usize = 8;
         let p1 = self.primes[self.pi];
         let p2 = self.primes[self.pi + RANGE];
         let min = (p1 * p1 + 2) as usize;
         let max = (p2 * p2) as usize;
-        // println!("Looking for primes in range {} - {}", min, max);
+
         let mut sieve = vec![true; max - min + 1];
         for &prime in &self.primes {
-            let low = ((min - 1) / prime as usize + 1) * prime as usize;
-            for j in (low..=max).step_by(prime as usize) {
-                sieve[j - min] = false;
+            let prime = prime as usize;
+            let bot = ((min - 1) / prime + 1) * prime;
+            for i in (bot..=max).step_by(prime) {
+                sieve[i - min] = false;
             }
         }
-        for (i, &is_prime) in sieve.iter().enumerate() {
-            if is_prime {
-                self.primes.push((i + min) as u32);
-            }
-        }
+
+        let len = self.primes.len();
+        self.primes.extend(
+            sieve.iter().enumerate()
+                .filter_map(|(i, &is_prime)|
+                    match is_prime {
+                        true => Some((i + min) as u32),
+                        false => None
+                    }
+                )
+        );
+        let len2 = self.primes.len();
         self.pi += RANGE;
+
+        println!("{:>5} primes found in range {:>8} - {:<8} ({:>6} numbers checked)", len2 - len, min, max, max - min);
     }
 }
 
@@ -47,16 +56,15 @@ impl Iterator for PrimeIterator {
     type Item = u32;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.i == self.primes.len() {
+        if self.index == self.primes.len() {
             self.expand();
         }
 
-        let result = Some(self.primes[self.i]);
-        self.i += 1;
+        let result = Some(self.primes[self.index]);
+        self.index += 1;
         return result;
     }
 }
-
 
 #[cfg(test)]
 mod tests {
