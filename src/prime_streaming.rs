@@ -1,37 +1,37 @@
 // https://www.codewars.com/kata/5519a584a73e70fa570005f5
 
-pub fn stream() -> impl Iterator<Item=u32> {
-    let n_to_i = |n: u32| -> usize {
-        match n % 6 {
-            1 => ((n - 1) / 3 - 1) as usize,
-            5 => ((n - 5) / 3) as usize,
-            _ => panic!("Unexpected input {n}")
+fn expand(primes: &mut Vec<u32>, s: &mut usize) {
+    *s += 8;
+    let p = primes[*s];
+    let max = (p * p) as usize;
+    let min = (primes.last().unwrap() + 1) as usize;
+    println!("Looking for primes in range {} - {}", min, max);
+    let mut sieve = vec![true; max - min + 1];
+    for &mut prime in primes.iter_mut() {
+        let low = ((min - 1) / prime as usize + 1) * prime as usize;
+        for j in (low..=max).step_by(prime as usize) {
+            sieve[j - min] = false;
         }
-    };
+    }
+    for (i, &is_prime) in sieve.iter().enumerate() {
+        if is_prime {
+            primes.push((i + min) as u32);
+        }
+    }
+}
 
-    let limit = 15_486_041;
-    let mut sieve = vec![true; n_to_i(limit)];
+pub fn stream() -> impl Iterator<Item=u32> {
+    let mut primes: Vec<u32> = vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+    let mut s = 0_usize;
+    expand(&mut primes, &mut s);
 
-    [2, 3].into_iter().chain(
-        (6..).step_by(6)
-            .map(|a| [(a, -1), (a, 1)].into_iter()).flatten()
-            .filter_map(move |(k, c)| {
-                let n = (k + c) as u32;
-                let is_prime = sieve[n_to_i(n)];
+    (0..).map(move |i| {
+        if i == primes.len() {
+            expand(&mut primes, &mut s);
+        }
 
-                if is_prime && n < 65536 {
-                    for x in (n..limit / n - 6).step_by(6)
-                        .map(|a| [(a, 0), (a, c + 3)].into_iter()).flatten()
-                        .map(|(k, c)| n * (k + c as u32)) {
-                        sieve[n_to_i(x)] = false
-                    }
-                }
-
-                match is_prime {
-                    true => Some(n),
-                    false => None
-                }
-            }))
+        primes[i]
+    })
 }
 
 
