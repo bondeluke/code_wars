@@ -1,3 +1,4 @@
+use std::time::Instant;
 use crate::prime_streaming::stream;
 
 mod to_camel_case;
@@ -41,7 +42,11 @@ mod tree_by_levels;
 mod prime_streaming;
 
 fn main() {
+    let start_time = Instant::now();
     test_segment(1_000_000);
+    let end_time = Instant::now();
+    let elapsed_time = end_time.duration_since(start_time);
+    println!("Duration: {:01}.{:03}s", elapsed_time.as_secs(), elapsed_time.subsec_millis());
 }
 
 fn test_segment(start: u32) {
