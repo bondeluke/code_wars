@@ -1,11 +1,11 @@
 // https://www.codewars.com/kata/5519a584a73e70fa570005f5
 
-fn expand(primes: &mut Vec<u32>, s: &mut usize) {
-    *s += 8;
-    let p = primes[*s];
-    let max = (p * p) as usize;
-    let min = (primes.last().unwrap() + 1) as usize;
-    println!("Looking for primes in range {} - {}", min, max);
+fn expand(primes: &mut Vec<u32>, s: usize, r: usize) {
+    let p1 = primes[s];
+    let p2 = primes[s + r];
+    let min = (p1 * p1 + 2) as usize;
+    let max = (p2 * p2) as usize;
+    //println!("Looking for primes in range {} - {}", min, max);
     let mut sieve = vec![true; max - min + 1];
     for &mut prime in primes.iter_mut() {
         let low = ((min - 1) / prime as usize + 1) * prime as usize;
@@ -20,14 +20,16 @@ fn expand(primes: &mut Vec<u32>, s: &mut usize) {
     }
 }
 
+#[allow(dead_code)]
 pub fn stream() -> impl Iterator<Item=u32> {
-    let mut primes: Vec<u32> = vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
-    let mut s = 0_usize;
-    expand(&mut primes, &mut s);
+    let mut primes: Vec<u32> = vec![2, 3, 5, 7, 11, 13, 17, 19, 23];
+    expand(&mut primes, 2, 6);
 
+    let mut s = 0_usize;
     (0..).map(move |i| {
         if i == primes.len() {
-            expand(&mut primes, &mut s);
+            s+= 8;
+            expand(&mut primes, s, 8);
         }
 
         primes[i]

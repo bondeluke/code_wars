@@ -54,3 +54,4 @@ Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads
   - [Make a spiral](src/make_a_spiral.rs)
   - [Rail Fence Cipher: Encoding and Decoding](src/rail_fence_cypher.rs)
   - [Sudoku Solver](src/sudoku_solver.rs)
+  - [Prime Streaming (PG-13)](src/prime_streaming.rs)
