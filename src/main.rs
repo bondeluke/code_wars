@@ -40,6 +40,7 @@ mod large_factorials;
 mod sudoku_solver;
 mod tree_by_levels;
 mod prime_streaming;
+mod order_weight;
 
 fn main() {
     let start_time = Instant::now();
