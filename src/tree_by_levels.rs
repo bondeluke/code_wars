@@ -8,22 +8,6 @@ pub struct Node {
     pub right: Option<Box<Node>>,
 }
 
-impl Node {
-    pub fn new(value: u32) -> Self {
-        Node { value, left: None, right: None }
-    }
-
-    pub fn left(mut self, left: Node) -> Self {
-        self.left = Some(Box::new(left));
-        self
-    }
-
-    pub fn right(mut self, right: Node) -> Self {
-        self.right = Some(Box::new(right));
-        self
-    }
-}
-
 #[allow(dead_code)]
 fn tree_by_levels(root: &Node) -> Vec<u32> {
     let mut result: Vec<u32> = vec![];
@@ -46,6 +30,22 @@ fn tree_by_levels(root: &Node) -> Vec<u32> {
 #[cfg(test)]
 mod sample_tests {
     use super::*;
+
+    impl Node {
+        pub fn new(value: u32) -> Self {
+            Node { value, left: None, right: None }
+        }
+
+        pub fn left(mut self, left: Node) -> Self {
+            self.left = Some(Box::new(left));
+            self
+        }
+
+        pub fn right(mut self, right: Node) -> Self {
+            self.right = Some(Box::new(right));
+            self
+        }
+    }
 
     #[test]
     fn root_only() {

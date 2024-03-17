@@ -1,3 +1,5 @@
+use crate::prime_streaming::stream;
+
 mod to_camel_case;
 mod find_short;
 mod is_pangram;
@@ -36,7 +38,18 @@ mod rail_fence_cypher;
 mod large_factorials;
 mod sudoku_solver;
 mod tree_by_levels;
+mod prime_streaming;
 
 fn main() {
-    println!("{}", "hello")
+    test_segment(1_000_000);
+}
+
+fn test_segment(start: u32) {
+    let mut prime_iterator = stream();
+    for _ in 0..start {
+        prime_iterator.next();
+    }
+    for _ in 0..10 {
+        println!("{}", prime_iterator.next().unwrap());
+    }
 }
