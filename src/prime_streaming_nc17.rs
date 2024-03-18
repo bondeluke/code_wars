@@ -24,18 +24,16 @@ impl PrimeIterator {
     }
 
     fn extend(&mut self) {
-        let p1 = self.primes[self.p1_index];
         let p2_index = min(self.p1_index + self.range, self.primes.len() - 1);
+        let p1 = self.primes[self.p1_index];
         let p2 = self.primes[p2_index];
         let lb = (p1 * p1) as usize;
         let ub = (p2 * p2) as usize;
 
         let mut sieve = vec![true; (ub - lb) / 2];
         //println!("extending primes: min={}, max={}, sieve.len={}", lb, ub, sieve.len());
-        for &p in &self.primes[1..] {
-            if p == p2 { break; }
-
-            let prime = p as usize;
+        for i in 1..p2_index {
+            let prime = self.primes[i] as usize;
             let low = ((lb - 1) / prime + 1) * prime;
             let odd_low = if low % 2 == 0 { low + prime } else { low };
             let start = max(odd_low, prime * prime);
@@ -57,7 +55,7 @@ impl PrimeIterator {
                 )
         );
 
-        // println!("extending:({:>3}, {:>3}) ({:>4}, {:>4}) {:>8} - {:<8} ({:>7}, {:>6}) {:>7} primes", self.p1_index, p2_index, p1, p2, lb, ub, ub - lb, sieve.len(), self.primes.len());
+        println!("extending:({:>3}, {:>3}) ({:>4}, {:>4}) {:>8} - {:<8} ({:>7}, {:>6}) {:>7} primes", self.p1_index, p2_index, p1, p2, lb, ub, ub - lb, sieve.len(), self.primes.len());
         self.p1_index = p2_index;
     }
 }
