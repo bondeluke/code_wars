@@ -8,6 +8,7 @@ struct PrimeIterator {
     cursor: i32,
     pi: usize,
     primes: Vec<u32>,
+    range: usize,
 }
 
 impl PrimeIterator {
@@ -15,23 +16,29 @@ impl PrimeIterator {
         Self {
             cursor: -1,
             pi: 1,
-            primes: vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+            primes: vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37],
+            range: 10,
         }
     }
 
     fn extend(&mut self) {
-        const RANGE: usize = 8;
         let p1 = self.primes[self.pi];
-        let p2 = self.primes[self.pi + RANGE];
+        let p2 = self.primes[self.pi + self.range];
         let min = (p1 * p1) as usize;
         let max = (p2 * p2) as usize;
 
-        let mut sieve = vec![true; max - min + 1];
-        for &prime in &self.primes {
+        let mut sieve = vec![true; (max - min) / 2 + 1];
+        // println!("extending primes: min={}, max={}, sieve.len={}", min, max, sieve.len());
+        for &prime in &self.primes[1..] {
             let prime = prime as usize;
-            let bot = ((min - 1) / prime + 1) * prime;
-            for i in (bot..=max).step_by(prime) {
-                sieve[i - min] = false;
+            let low = ((min - 1) / prime + 1) * prime;
+            let odd_low = if low % 2 == 0 { low + prime } else { low };
+            // println!("prime={}, low={}, odd_low={}", prime, low, odd_low);
+            if odd_low % 2 == 0 { panic!("nope! we expected odd_low to be odd, but it's {odd_low}") }
+            for n in (odd_low..=max).step_by(prime * 2) {
+                //println!("crossing out {} at index {}", n, (n - min) / 2);
+                if n % 2 == 0 { panic!("we do not expect to cross out even numbers like {n}") }
+                sieve[(n - min) / 2] = false;
             }
         }
 
@@ -40,15 +47,15 @@ impl PrimeIterator {
             sieve.iter().enumerate()
                 .filter_map(|(i, &is_prime)|
                     match is_prime {
-                        true => Some((i + min) as u32),
+                        true => Some((i * 2 + min) as u32),
                         false => None
                     }
                 )
         );
         let len2 = self.primes.len();
-        self.pi += RANGE;
+        self.pi += self.range;
 
-        println!("{:>5} primes found in range {:>3}^2 = {:>8} - {:<8} = {:>3}^2 ({:>6} numbers checked)", len2 - len,p1, min, max, p2, max - min);
+        println!("extending:({:>3}, {:>3}) ({:>4}, {:>4}) {:>8} - {:<8} ({:>7}, {:>6}) {:>5} added, {:>7} total", self.pi, self.pi + self.range, p1, p2, min, max, max - min, sieve.len(), len2 - len, self.primes.len());
     }
 }
 
@@ -68,7 +75,7 @@ impl Iterator for PrimeIterator {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::stream;
 
     fn test_segment(start: u32, numbers: [u32; 10]) {
         let mut prime_iterator = stream();
