@@ -1,5 +1,7 @@
 // https://www.codewars.com/kata/59122604e5bc240817000016
 
+use num::integer::sqrt;
+
 pub fn stream() -> impl Iterator<Item=u32> {
     PrimeIterator::new()
 }
@@ -31,6 +33,7 @@ impl PrimeIterator {
         // println!("extending primes: min={}, max={}, sieve.len={}", min, max, sieve.len());
         for &prime in &self.primes[1..] {
             let prime = prime as usize;
+            if prime > sqrt(max) { break; }
             let low = ((min - 1) / prime + 1) * prime;
             let odd_low = if low % 2 == 0 { low + prime } else { low };
             // println!("prime={}, low={}, odd_low={}", prime, low, odd_low);
@@ -56,6 +59,10 @@ impl PrimeIterator {
         self.pi += self.range;
 
         println!("extending:({:>3}, {:>3}) ({:>4}, {:>4}) {:>8} - {:<8} ({:>7}, {:>6}) {:>5} added, {:>7} total", self.pi, self.pi + self.range, p1, p2, min, max, max - min, sieve.len(), len2 - len, self.primes.len());
+
+        if self.range < 50 {
+            self.range = 50;
+        }
     }
 }
 
