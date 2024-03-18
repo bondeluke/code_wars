@@ -1,6 +1,6 @@
 // https://www.codewars.com/kata/59122604e5bc240817000016
 
-use num::integer::sqrt;
+use std::cmp::{max, min};
 
 pub fn stream() -> impl Iterator<Item=u32> {
     PrimeIterator::new()
@@ -8,7 +8,7 @@ pub fn stream() -> impl Iterator<Item=u32> {
 
 struct PrimeIterator {
     cursor: i32,
-    pi: usize,
+    p1_index: usize,
     primes: Vec<u32>,
     range: usize,
 }
@@ -17,52 +17,48 @@ impl PrimeIterator {
     fn new() -> Self {
         Self {
             cursor: -1,
-            pi: 1,
-            primes: vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37],
-            range: 10,
+            p1_index: 1,
+            primes: vec![2, 3, 5, 7],
+            range: 8,
         }
     }
 
     fn extend(&mut self) {
-        let p1 = self.primes[self.pi];
-        let p2 = self.primes[self.pi + self.range];
-        let min = (p1 * p1) as usize;
-        let max = (p2 * p2) as usize;
+        let p1 = self.primes[self.p1_index];
+        let p2_index = min(self.p1_index + self.range, self.primes.len() - 1);
+        let p2 = self.primes[p2_index];
+        let lb = (p1 * p1) as usize;
+        let ub = (p2 * p2) as usize;
 
-        let mut sieve = vec![true; (max - min) / 2 + 1];
-        // println!("extending primes: min={}, max={}, sieve.len={}", min, max, sieve.len());
-        for &prime in &self.primes[1..] {
-            let prime = prime as usize;
-            if prime > sqrt(max) { break; }
-            let low = ((min - 1) / prime + 1) * prime;
+        let mut sieve = vec![true; (ub - lb) / 2];
+        //println!("extending primes: min={}, max={}, sieve.len={}", lb, ub, sieve.len());
+        for &p in &self.primes[1..] {
+            if p == p2 { break; }
+
+            let prime = p as usize;
+            let low = ((lb - 1) / prime + 1) * prime;
             let odd_low = if low % 2 == 0 { low + prime } else { low };
-            // println!("prime={}, low={}, odd_low={}", prime, low, odd_low);
-            if odd_low % 2 == 0 { panic!("nope! we expected odd_low to be odd, but it's {odd_low}") }
-            for n in (odd_low..=max).step_by(prime * 2) {
-                //println!("crossing out {} at index {}", n, (n - min) / 2);
-                if n % 2 == 0 { panic!("we do not expect to cross out even numbers like {n}") }
-                sieve[(n - min) / 2] = false;
+            let start = max(odd_low, prime * prime);
+
+            //println!("prime={}, low={}, odd_low={}, p^2={}, ({} - {}),", prime, low, odd_low, prime * prime, lb, ub);
+            for n in (start..ub).step_by(prime * 2) {
+                //println!("crossing out {:>4}={:>2}*{:>2} at index {}", n, prime, n / prime, (n - lb) / 2);
+                sieve[(n - lb) / 2] = false;
             }
         }
 
-        let len = self.primes.len();
         self.primes.extend(
             sieve.iter().enumerate()
                 .filter_map(|(i, &is_prime)|
                     match is_prime {
-                        true => Some((i * 2 + min) as u32),
+                        true => Some((i * 2 + lb) as u32),
                         false => None
                     }
                 )
         );
-        let len2 = self.primes.len();
-        self.pi += self.range;
 
-        println!("extending:({:>3}, {:>3}) ({:>4}, {:>4}) {:>8} - {:<8} ({:>7}, {:>6}) {:>5} added, {:>7} total", self.pi, self.pi + self.range, p1, p2, min, max, max - min, sieve.len(), len2 - len, self.primes.len());
-
-        if self.range < 50 {
-            self.range = 50;
-        }
+        // println!("extending:({:>3}, {:>3}) ({:>4}, {:>4}) {:>8} - {:<8} ({:>7}, {:>6}) {:>7} primes", self.p1_index, p2_index, p1, p2, lb, ub, ub - lb, sieve.len(), self.primes.len());
+        self.p1_index = p2_index;
     }
 }
 

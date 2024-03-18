@@ -45,7 +45,7 @@ mod prime_streaming_nc17;
 
 fn main() {
     let start_time = Instant::now();
-    test_segment(1_000_000);
+    test_segment(10_000_000);
     let end_time = Instant::now();
     let elapsed_time = end_time.duration_since(start_time);
     println!("Duration: {:01}.{:03}s", elapsed_time.as_secs(), elapsed_time.subsec_millis());
