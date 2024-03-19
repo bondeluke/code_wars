@@ -1,9 +1,6 @@
 // https://www.codewars.com/kata/59122604e5bc240817000016
 
 use std::cmp::{max, min};
-use std::sync::{Arc, Mutex};
-use std::thread;
-use std::thread::JoinHandle;
 
 pub fn stream() -> impl Iterator<Item=u32> {
     PrimeIterator::new()
@@ -22,7 +19,7 @@ impl PrimeIterator {
             cursor: -1,
             p1_index: 1,
             primes: vec![2, 3, 5, 7],
-            range: 8,
+            range: 4,
         }
     }
 
@@ -33,41 +30,25 @@ impl PrimeIterator {
         let lb = (p1 * p1) as usize;
         let ub = (p2 * p2) as usize;
 
-        //println!("extending primes: min={}, max={}, sieve.len={}", lb, ub, sieve.len());
+        //println!("Extending range {} - {}", lb, ub);
+        let mut sieve = vec![true; (ub - lb) / 2];
+        for i in 1..p2_index {
+            let prime = self.primes[i] as usize;
+            let low = ((lb - 1) / prime + 1) * prime;
+            let odd_low = if low % 2 == 0 { low + prime } else { low };
+            let start = max(odd_low, prime * prime);
+            //println!("prime {prime}, starting at {start}");
+            for n in (start..ub).step_by(prime * 2) {
+                //println!("crossing out {:>3} * {:>3} = {}", prime, n / prime, n);
+                sieve[(n - lb) / 2] = false;
+            }
+        }
 
-        let sieve_mutex = Arc::new(Mutex::new(vec![true; (ub - lb) / 2]));
-
-        (1..p2_index)
-            .map(|i| self.primes[i] as usize)
-            .collect::<Vec<usize>>()
-            .chunks(100)
-            .map(|chunk| {
-                let batch = chunk.to_vec();
-                let sieve_mutex_clone = Arc::clone(&sieve_mutex);
-                thread::spawn(move || {
-                    for prime in batch {
-                        let low = ((lb - 1) / prime + 1) * prime;
-                        let odd_low = if low % 2 == 0 { low + prime } else { low };
-                        let start = max(odd_low, prime * prime);
-
-                        let mut sieve = sieve_mutex_clone.lock().unwrap();
-                        for n in (start..ub).step_by(prime * 2) {
-                            sieve[(n - lb) / 2] = false;
-                        }
-                    }
-                })
-            })
-            .collect::<Vec<JoinHandle<()>>>()
-            .into_iter().for_each(|h| h.join().unwrap());
-
-        let sieve = sieve_mutex.lock().unwrap();
-        self.primes.extend(sieve.iter().enumerate()
-            .filter_map(|(i, &is_prime)|
-                match is_prime {
-                    true => Some((i * 2 + lb) as u32),
-                    false => None
-                }
-            ));
+        for i in 0..sieve.len() {
+            if sieve[i] {
+                self.primes.push((i * 2 + lb) as u32)
+            }
+        }
 
         //println!("extending:({:>3}, {:>3}) ({:>4}, {:>4}) {:>8} - {:<8} ({:>7}, {:>6}) {:>7} primes", self.p1_index, p2_index, p1, p2, lb, ub, ub - lb, sieve.len(), self.primes.len());
         self.p1_index = p2_index;
