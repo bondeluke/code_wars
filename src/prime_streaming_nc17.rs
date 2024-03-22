@@ -44,7 +44,6 @@ pub fn get_wheel(basis_size: u32) -> Wheel {
 
 struct PrimeIterator {
     cursor: i32,
-    segment: usize,
     primes: Vec<u32>,
     wheel: Wheel,
 }
@@ -53,7 +52,6 @@ impl PrimeIterator {
     fn new() -> Self {
         Self {
             cursor: -1,
-            segment: 1,
             primes: vec![],
             wheel: get_wheel(7),
         }
@@ -75,12 +73,13 @@ impl PrimeIterator {
             cutoff_index += 1;
         }
 
-        let mut sieve = vec![true; spokes_len];
-        let mut lookup: Vec<Option<usize>> = (0..self.wheel.circumference()).map(|x| None).collect();
-        for i in 0..self.wheel.spokes.len() {
-            lookup[self.wheel.spokes[i] as usize] = Some(i);
+        // (3) Create a sieve
+        let mut sieve: Vec<bool> = vec![false; (self.wheel.circumference() / 3) as usize];
+        for &spoke in &self.wheel.spokes {
+            sieve[(spoke / 3) as usize] = true;
         }
 
+        // (4) Cross out multiples of primes using spoke multiples
         let circ = self.wheel.circumference();
         for &prime in &self.primes[basis_size..] {
             if prime * prime > circ { break; }
@@ -91,18 +90,14 @@ impl PrimeIterator {
                 let product = prime * spoke;
                 if product > circ { break; }
 
-                if let Some(index) = lookup[product as usize] {
-                    //println!("crossing out {} x {} = {} at index {}", prime, spoke, product, index);
-                    sieve[index] = false;
-                } else {
-                    //println!("lookup not found {} x {} = {}", prime, spoke, product)
-                }
+                sieve[(product / 3) as usize] = false;
+                //println!("crossing out {} x {} = {} at index {}", prime, spoke, product, index);
             }
         }
 
         for i in cutoff_index..spokes_len {
             let spoke = self.wheel.spokes[i];
-            if sieve[lookup[spoke as usize].unwrap()] {
+            if sieve[(spoke / 3) as usize] {
                 self.primes.push(spoke);
             }
         }

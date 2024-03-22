@@ -1,6 +1,5 @@
 use std::time::Instant;
 use crate::prime_streaming_nc17::{stream17};
-//use crate::prime_streaming::stream;
 
 mod to_camel_case;
 mod find_short;

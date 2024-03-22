@@ -31,7 +31,7 @@ impl PrimeIterator {
         let lb = (p1 * p1) as usize;
         let ub = (p2 * p2) as usize;
 
-        println!("Extending range {} - {}", lb, ub);
+        // println!("Extending range {} - {}", lb, ub);
         let mut sieve = vec![true; (ub - lb) / 2];
         for i in 1..p2_index {
             let prime = self.primes[i] as usize;
