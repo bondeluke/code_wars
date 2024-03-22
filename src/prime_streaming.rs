@@ -1,45 +1,58 @@
 // https://www.codewars.com/kata/5519a584a73e70fa570005f5
 
+use std::cmp::{max, min};
+
 #[allow(dead_code)]
 fn stream() -> impl Iterator<Item=u32> {
     PrimeIterator::new()
 }
 
 struct PrimeIterator {
-    i: usize,
-    pi: usize,
+    cursor: i32,
+    p1_index: usize,
     primes: Vec<u32>,
+    range: usize
 }
 
 impl PrimeIterator {
     fn new() -> Self {
         Self {
-            i: 0,
-            pi: 0,
-            primes: vec![2, 3, 5, 7, 11, 13, 17, 19, 23],
+            cursor: -1,
+            p1_index: 1,
+            primes: vec![2, 3, 5, 7],
+            range: 4
         }
     }
 
-    fn expand(&mut self) {
-        const RANGE : usize = 8;
-        let p1 = self.primes[self.pi];
-        let p2 = self.primes[self.pi + RANGE];
-        let min = (p1 * p1 + 2) as usize;
-        let max = (p2 * p2) as usize;
-        // println!("Looking for primes in range {} - {}", min, max);
-        let mut sieve = vec![true; max - min + 1];
-        for &prime in &self.primes {
-            let low = ((min - 1) / prime as usize + 1) * prime as usize;
-            for j in (low..=max).step_by(prime as usize) {
-                sieve[j - min] = false;
+    fn extend(&mut self) {
+        let p2_index = min(self.p1_index + self.range, self.primes.len() - 1);
+        let p1 = self.primes[self.p1_index];
+        let p2 = self.primes[p2_index];
+        let lb = (p1 * p1) as usize;
+        let ub = (p2 * p2) as usize;
+
+        //println!("Extending range {} - {}", lb, ub);
+        let mut sieve = vec![true; (ub - lb) / 2];
+        for i in 1..p2_index {
+            let prime = self.primes[i] as usize;
+            let low = ((lb - 1) / prime + 1) * prime;
+            let odd_low = if low % 2 == 0 { low + prime } else { low };
+            let start = max(odd_low, prime * prime);
+            //println!("prime {prime}, starting at {start}");
+            for n in (start..ub).step_by(prime * 2) {
+                //println!("crossing out {:>3} * {:>3} = {}", prime, n / prime, n);
+                sieve[(n - lb) / 2] = false;
             }
         }
-        for (i, &is_prime) in sieve.iter().enumerate() {
-            if is_prime {
-                self.primes.push((i + min) as u32);
+
+        for i in 0..sieve.len() {
+            if sieve[i] {
+                self.primes.push((i * 2 + lb) as u32)
             }
         }
-        self.pi += RANGE;
+
+        //println!("extending:({:>3}, {:>3}) ({:>4}, {:>4}) {:>8} - {:<8} ({:>7}, {:>6}) {:>7} primes", self.p1_index, p2_index, p1, p2, lb, ub, ub - lb, sieve.len(), self.primes.len());
+        self.p1_index = p2_index;
     }
 }
 
@@ -47,16 +60,15 @@ impl Iterator for PrimeIterator {
     type Item = u32;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.i == self.primes.len() {
-            self.expand();
+        self.cursor += 1;
+
+        if self.cursor as usize == self.primes.len() {
+            self.extend();
         }
 
-        let result = Some(self.primes[self.i]);
-        self.i += 1;
-        return result;
+        Some(self.primes[self.cursor as usize])
     }
 }
-
 
 #[cfg(test)]
 mod tests {
