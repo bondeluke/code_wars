@@ -1,5 +1,5 @@
-use std::time::Instant;
-use crate::prime_streaming_nc17::stream;
+use std::iter::once;
+use num_traits::ToPrimitive;
 
 mod to_camel_case;
 mod find_short;
@@ -44,19 +44,50 @@ mod order_weight;
 mod prime_streaming_nc17;
 
 fn main() {
-    let start_time = Instant::now();
-    test_segment(10_000_000);
-    let end_time = Instant::now();
-    let elapsed_time = end_time.duration_since(start_time);
-    println!("Duration: {:01}.{:03}s", elapsed_time.as_secs(), elapsed_time.subsec_millis());
+    let mut wheels: Vec<Wheel> = vec![Wheel { basis: vec![2], spokes: vec![1] }];
+
+    for _ in 0..3 {
+        wheels.push(next_wheel(wheels.last().unwrap().clone()));
+    }
+
+    for wheel in wheels {
+        println!("Basis: {:?}", wheel.basis);
+        println!("Spokes: {:?}", wheel.spokes);
+        println!("Circumference: {:?}", wheel.basis.iter().product::<u32>());
+    }
 }
 
-fn test_segment(start: u32) {
-    let mut prime_iterator = stream();
-    for _ in 0..start {
-        prime_iterator.next();
-    }
-    for _ in 0..10 {
-        println!("{}", prime_iterator.next().unwrap());
-    }
+#[derive(Clone)]
+struct Wheel {
+    basis: Vec<u32>,
+    spokes: Vec<u32>,
 }
+
+fn next_wheel(wheel: Wheel) -> Wheel {
+    let p = if wheel.basis.len() > 1 { wheel.spokes[1] } else { 3 };
+    let circumference = wheel.basis.iter().product::<u32>();
+    let basis = wheel.basis.iter().copied().chain(once(p)).collect::<Vec<u32>>();
+    let mut spokes: Vec<u32> = vec![];
+    for k in 0..p {
+        for s in &wheel.spokes {
+            let spoke = k * circumference + s;
+            if spoke % p != 0 {
+                spokes.push(spoke);
+            }
+        }
+    }
+    Wheel { basis, spokes }
+}
+
+
+// let start_time = Instant::now();
+// let mut prime_iterator = stream();
+// for _ in 0..50_000_000 {
+//     prime_iterator.next();
+// }
+// for _ in 0..10 {
+//     println!("{}", prime_iterator.next().unwrap());
+// }
+// let end_time = Instant::now();
+// let elapsed_time = end_time.duration_since(start_time);
+// println!("Duration: {:01}.{:03}s", elapsed_time.as_secs(), elapsed_time.subsec_millis());
