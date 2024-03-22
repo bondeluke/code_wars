@@ -2,23 +2,23 @@
 
 use std::iter::once;
 
-pub fn stream() -> impl Iterator<Item=u32> {
+pub fn stream17() -> impl Iterator<Item=u32> {
     PrimeIterator::new()
 }
 
 #[derive(Clone)]
-struct Wheel {
-    basis: Vec<u32>,
-    spokes: Vec<u32>,
+pub struct Wheel {
+    pub basis: Vec<u32>,
+    pub spokes: Vec<u32>,
 }
 
 impl Wheel {
-    fn circumference(&self) -> u32 {
+    pub fn circumference(&self) -> u32 {
         self.basis.iter().product()
     }
 }
 
-fn next_wheel(wheel: Wheel) -> Wheel {
+pub fn next_wheel(wheel: Wheel) -> Wheel {
     let p = if wheel.spokes.len() > 1 { wheel.spokes[1] } else { 3 };
     let circ = wheel.circumference();
     let basis = wheel.basis.iter().copied().chain(once(p)).collect::<Vec<u32>>();
@@ -34,7 +34,7 @@ fn next_wheel(wheel: Wheel) -> Wheel {
     Wheel { basis, spokes }
 }
 
-fn get_wheel(basis_size: u32) -> Wheel {
+pub fn get_wheel(basis_size: u32) -> Wheel {
     let mut wheel = Wheel { basis: vec![2], spokes: vec![1] };
     for _ in 1..basis_size {
         wheel = next_wheel(wheel);
@@ -55,38 +55,58 @@ impl PrimeIterator {
             cursor: -1,
             segment: 1,
             primes: vec![],
-            wheel: get_wheel(6),
+            wheel: get_wheel(7),
         }
     }
 
     fn initialize(&mut self) {
-        println!("Basis: {:?}", self.wheel.basis);
         println!("Initializing primes up to {}...", self.wheel.circumference());
         let basis_size = self.wheel.basis.len();
-        let p_squared = self.wheel.basis[basis_size - 1].pow(2);
+        let spokes_len = self.wheel.spokes.len();
+        let p_squared = self.wheel.spokes[1].pow(2);
 
         // (1) Start with the basis
         self.primes.extend(&self.wheel.basis);
 
         // (2) Spokes up to p_squared are guaranteed prime
-        let mut i = 1;
-        while self.wheel.spokes[i] < p_squared {
-            self.primes.push(self.wheel.spokes[i]);
-            i += 1;
+        let mut cutoff_index = 1;
+        while cutoff_index < spokes_len && self.wheel.spokes[cutoff_index] < p_squared {
+            self.primes.push(self.wheel.spokes[cutoff_index]);
+            cutoff_index += 1;
         }
 
-        // (3) Remaining spokes need to be checked for primality
-        'spoke_loop: for &spoke in &self.wheel.spokes[i..] {
-            for &prime in &self.primes[basis_size..] {
-                if prime * prime > spoke {
-                    self.primes.push(spoke);
-                    break;
-                }
-                if spoke % prime == 0 {
-                    continue 'spoke_loop;
+        let mut sieve = vec![true; spokes_len];
+        let mut lookup: Vec<Option<usize>> = (0..self.wheel.circumference()).map(|x| None).collect();
+        for i in 0..self.wheel.spokes.len() {
+            lookup[self.wheel.spokes[i] as usize] = Some(i);
+        }
+
+        let circ = self.wheel.circumference();
+        for &prime in &self.primes[basis_size..] {
+            if prime * prime > circ { break; }
+
+            for &spoke in &self.wheel.spokes[1..] {
+                if spoke < prime { continue; }
+
+                let product = prime * spoke;
+                if product > circ { break; }
+
+                if let Some(index) = lookup[product as usize] {
+                    //println!("crossing out {} x {} = {} at index {}", prime, spoke, product, index);
+                    sieve[index] = false;
+                } else {
+                    //println!("lookup not found {} x {} = {}", prime, spoke, product)
                 }
             }
         }
+
+        for i in cutoff_index..spokes_len {
+            let spoke = self.wheel.spokes[i];
+            if sieve[lookup[spoke as usize].unwrap()] {
+                self.primes.push(spoke);
+            }
+        }
+
         println!("Initialized {} primes. Last prime added was {}", self.primes.len(), self.primes[self.primes.len() - 1])
     }
 
@@ -113,10 +133,10 @@ impl Iterator for PrimeIterator {
 
 #[cfg(test)]
 mod tests {
-    use super::stream;
+    use super::stream17;
 
     fn test_segment(start: u32, numbers: [u32; 10]) {
-        let mut prime_iterator = stream();
+        let mut prime_iterator = stream17();
         for _ in 0..start {
             prime_iterator.next();
         }
