@@ -58,46 +58,60 @@ impl PrimeIterator {
     }
 
     fn initialize(&mut self) {
-        println!("Initializing primes up to {}...", self.wheel.circumference());
+        let spokes = &self.wheel.spokes;
+        let limit = self.wheel.circumference();
         let basis_size = self.wheel.basis.len();
-        let spokes_len = self.wheel.spokes.len();
-        let p_squared = self.wheel.spokes[1].pow(2);
+        let spokes_len = spokes.len();
 
-        // (1) Start with the basis
+        println!("Initializing primes up to {}...", self.wheel.circumference());
+
+        // (1) Start with the basis and the first non-1 spoke
         self.primes.extend(&self.wheel.basis);
+        self.primes.push(spokes[1]);
 
-        // (2) Spokes up to p_squared are guaranteed prime
-        let mut cutoff_index = 1;
-        while cutoff_index < spokes_len && self.wheel.spokes[cutoff_index] < p_squared {
-            self.primes.push(self.wheel.spokes[cutoff_index]);
-            cutoff_index += 1;
-        }
-
-        // (3) Create a sieve
+        // (2) Create a sieve to track spoke primality
         let mut sieve: Vec<bool> = vec![false; (self.wheel.circumference() / 3) as usize];
         for &spoke in &self.wheel.spokes {
             sieve[(spoke / 3) as usize] = true;
         }
 
-        // (4) Cross out multiples of primes using spoke multiples
-        let circ = self.wheel.circumference();
-        for &prime in &self.primes[basis_size..] {
-            if prime * prime > circ { break; }
+        // (3) Cross out composites using spoke multiples
+        let mut j_lb = 1;
+        let mut spoke_index = 2;
+        for i in basis_size.. {
+            let prime = self.primes[i];
+            let p_squared = prime * prime;
+            if p_squared > limit { break; }
 
-            for &spoke in &self.wheel.spokes[1..] {
-                if spoke < prime { continue; }
+            for j in j_lb..spokes_len {
+                let spoke = spokes[j];
+                if spoke < prime {
+                    j_lb = j;
+                    continue;
+                }
 
                 let product = prime * spoke;
-                if product > circ { break; }
+                if product > limit { break; }
 
                 sieve[(product / 3) as usize] = false;
-                //println!("crossing out {} x {} = {} at index {}", prime, spoke, product, index);
+                //println!("Crossing out {} x {} = {} at index {}", prime, spoke, product, product / 3);
             }
+
+            while spokes[spoke_index] < p_squared {
+                if sieve[(spokes[spoke_index] / 3) as usize] {
+                    //println!("Adding {spoke} as a prime");
+                    self.primes.push(spokes[spoke_index]);
+                }
+                spoke_index += 1;
+            }
+
+             j_lb += 1;
         }
 
-        for i in cutoff_index..spokes_len {
-            let spoke = self.wheel.spokes[i];
+        // (4) Add remaining spokes that have not been crossed out
+        for &spoke in &spokes[spoke_index..spokes_len] {
             if sieve[(spoke / 3) as usize] {
+                //println!("Adding {spoke} as a prime (leftover)");
                 self.primes.push(spoke);
             }
         }
