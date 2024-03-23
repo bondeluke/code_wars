@@ -1,5 +1,6 @@
 // https://www.codewars.com/kata/59122604e5bc240817000016
 
+use std::cmp::max;
 use std::iter::once;
 
 pub fn stream17() -> impl Iterator<Item=u32> {
@@ -46,6 +47,7 @@ struct PrimeIterator {
     cursor: i32,
     primes: Vec<u32>,
     wheel: Wheel,
+    segment: usize,
 }
 
 impl PrimeIterator {
@@ -54,6 +56,7 @@ impl PrimeIterator {
             cursor: -1,
             primes: vec![],
             wheel: get_wheel(7),
+            segment: 1,
         }
     }
 
@@ -105,7 +108,7 @@ impl PrimeIterator {
                 spoke_index += 1;
             }
 
-             j_lb += 1;
+            j_lb += 1;
         }
 
         // (4) Add remaining spokes that have not been crossed out
@@ -116,10 +119,48 @@ impl PrimeIterator {
             }
         }
 
-        println!("Initialized {} primes. Last prime added was {}", self.primes.len(), self.primes[self.primes.len() - 1])
+        //println!("Initialized {} primes. Last prime added was {}", self.primes.len(), self.primes[self.primes.len() - 1])
     }
 
-    fn extend(&mut self) {}
+    fn extend(&mut self) {
+        let spokes = &self.wheel.spokes;
+        let circ = self.wheel.circumference() as usize;
+        let lower_limit = self.segment * circ;
+        let upper_limit = (self.segment + 1) * circ;
+        let basis_size = self.wheel.basis.len();
+
+        //println!("Expanding primes in range {} - {}...", lower_limit, upper_limit);
+
+        // (2) Create a sieve to track spoke primality
+        let mut sieve: Vec<bool> = vec![false; circ / 2];
+        for &spoke in &self.wheel.spokes {
+            sieve[(spoke / 2) as usize] = true;
+        }
+
+        // (3) Cross out composites using spoke multiples
+        for i in basis_size.. {
+            let prime = self.primes[i] as usize;
+            let p_squared = prime * prime;
+            if p_squared > upper_limit { break; }
+
+            let low = ((lower_limit - 1) / prime + 1) * prime;
+            let odd_low = if low % 2 == 0 { low + prime } else { low };
+            let start = max(odd_low, p_squared);
+            for n in (start..upper_limit).step_by(prime * 2) {
+                // println!("Crossing out {} x {} = {} at index {}", prime, n / prime, n, n - lower_limit);
+                sieve[(n - lower_limit) / 2] = false;
+            }
+        }
+
+        // (4) Add remaining spokes that have not been crossed out
+        for &spoke in spokes {
+            if sieve[(spoke / 2) as usize] {
+                //println!("Adding {spoke} as a prime (leftover)");
+                self.primes.push((lower_limit as u32) + spoke);
+            }
+        }
+        self.segment += 1;
+    }
 }
 
 impl Iterator for PrimeIterator {
