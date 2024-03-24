@@ -43,9 +43,9 @@ fn get_wheel(basis_size: usize) -> Wheel {
 }
 
 struct PrimeIterator {
-    wheel: Wheel,
     sieve: Vec<bool>,
     next_spoke: Vec<usize>,
+    wheel: Wheel,
     primes: Vec<usize>,
     segment: usize,
     cursor: i32,
@@ -53,35 +53,38 @@ struct PrimeIterator {
 
 impl PrimeIterator {
     fn new() -> Self {
+        let wheel = get_wheel(7);
         Self {
-            wheel: get_wheel(7),
-            sieve: vec![],
-            next_spoke: vec![],
+            sieve: PrimeIterator::initialize_sieve(&wheel),
+            next_spoke: PrimeIterator::initialize_next_spoke(&wheel),
+            wheel,
             primes: vec![],
             segment: 1,
             cursor: -1,
         }
     }
 
-    fn initialize_caches(&mut self) {
-        let circ = self.wheel.circumference();
+    fn initialize_sieve(wheel: &Wheel) -> Vec<bool> {
+        let mut sieve = vec![false; wheel.circumference() / 3];
+        for &spoke in &wheel.spokes {
+            sieve[spoke / 3] = true;
+        }
+        sieve
+    }
 
-        // Next spoke lookup
-        self.next_spoke = vec![0; circ];
+    fn initialize_next_spoke(wheel: &Wheel) -> Vec<usize> {
+        let circ = wheel.circumference();
+
+        let mut next_spoke = vec![0; circ];
         let mut spoke_index = 0;
         for i in 0..circ {
-            let spoke = self.wheel.spokes[spoke_index];
-            self.next_spoke[i] = spoke_index;
+            let spoke = wheel.spokes[spoke_index];
+            next_spoke[i] = spoke_index;
             if i == spoke {
                 spoke_index += 1;
             }
         }
-
-        // Copyable sieve
-        self.sieve = vec![false; circ / 3];
-        for &spoke in &self.wheel.spokes {
-            self.sieve[spoke / 3] = true;
-        }
+        next_spoke
     }
 
     fn initialize_primes(&mut self) {
@@ -182,7 +185,6 @@ impl Iterator for PrimeIterator {
 
         if self.cursor as usize == self.primes.len() {
             if self.cursor == 0 {
-                self.initialize_caches();
                 self.initialize_primes();
             } else {
                 self.extend();
