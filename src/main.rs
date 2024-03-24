@@ -1,5 +1,5 @@
 use std::time::Instant;
-use crate::prime_streaming_nc17::{stream17};
+use crate::prime_streaming_nc17::{stream};
 
 mod to_camel_case;
 mod find_short;
@@ -45,7 +45,7 @@ mod prime_streaming_nc17;
 
 fn main() {
     let start_time = Instant::now();
-    let mut prime_iterator = stream17();
+    let mut prime_iterator = stream();
     for _ in 0..50_000_000 {
         prime_iterator.next();
     }

@@ -2,7 +2,7 @@
 
 use std::iter::once;
 
-pub fn stream17() -> impl Iterator<Item=u32> {
+pub fn stream() -> impl Iterator<Item=u32> {
     PrimeIterator::new()
 }
 
@@ -43,12 +43,12 @@ fn get_wheel(basis_size: usize) -> Wheel {
 }
 
 struct PrimeIterator {
-    cursor: i32,
-    primes: Vec<usize>,
     wheel: Wheel,
-    segment: usize,
-    next_spoke: Vec<usize>,
     sieve: Vec<bool>,
+    next_spoke: Vec<usize>,
+    primes: Vec<usize>,
+    segment: usize,
+    cursor: i32,
 }
 
 impl PrimeIterator {
@@ -163,7 +163,7 @@ impl PrimeIterator {
             }
         }
 
-        // (3) Add primes for the spokes which have not been crossed out
+        // (3) Add spokes which have not been crossed out
         for &spoke in spokes {
             if sieve[spoke / 3] {
                 //println!("Adding {spoke} as a prime");
@@ -181,7 +181,7 @@ impl Iterator for PrimeIterator {
         self.cursor += 1;
 
         if self.cursor as usize == self.primes.len() {
-            if self.primes.is_empty() {
+            if self.cursor == 0 {
                 self.initialize_caches();
                 self.initialize_primes();
             } else {
@@ -195,10 +195,10 @@ impl Iterator for PrimeIterator {
 
 #[cfg(test)]
 mod tests {
-    use super::stream17;
+    use super::stream;
 
     fn test_segment(start: u32, numbers: [u32; 10]) {
-        let mut prime_iterator = stream17();
+        let mut prime_iterator = stream();
         for _ in 0..start {
             prime_iterator.next();
         }
