@@ -56,5 +56,6 @@ Here are the Kata I've completed so far, grouped by kyu ranking. Each link leads
   - [Rail Fence Cipher: Encoding and Decoding](src/rail_fence_cypher.rs)
   - [Sudoku Solver](src/sudoku_solver.rs)
   - [Prime Streaming (PG-13)](src/prime_streaming.rs)
-- 2kyu
+- ![2kyu](https://github.com/bondeluke/code_wars/assets/7105195/09910569-ac7c-4fae-8d69-712ec33006d0)
   - [Prime Streaming (NC-17)](src/prime_streaming_nc17.rs)
+
