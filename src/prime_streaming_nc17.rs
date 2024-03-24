@@ -1,6 +1,5 @@
 // https://www.codewars.com/kata/59122604e5bc240817000016
 
-use std::cmp::{max};
 use std::iter::once;
 
 pub fn stream17() -> impl Iterator<Item=u32> {
@@ -55,7 +54,7 @@ struct PrimeIterator {
 impl PrimeIterator {
     fn new() -> Self {
         Self {
-            wheel: get_wheel(4),
+            wheel: get_wheel(7),
             sieve: vec![],
             next_spoke: vec![],
             primes: vec![],
@@ -87,12 +86,11 @@ impl PrimeIterator {
 
     fn initialize_primes(&mut self) {
         let spokes = &self.wheel.spokes;
-        let circ = self.wheel.circumference();
-        let limit = self.wheel.circumference();
+        let upper_limit = self.wheel.circumference();
         let basis_size = self.wheel.basis.len();
         let spokes_len = spokes.len();
 
-        println!("Initializing primes up to {}...", circ);
+        //println!("Initializing primes up to {}...", self.wheel.circumference());
 
         // (1) Start with the basis and the first non-1 spoke
         self.primes.extend(&self.wheel.basis);
@@ -102,25 +100,18 @@ impl PrimeIterator {
         let mut sieve = self.sieve.clone();
 
         // (3) Cross out composites using spoke multiples
-        let mut j_lb = 1;
         let mut spoke_index = 2;
         for i in basis_size.. {
             let prime = self.primes[i];
             let p_squared = prime * prime;
-            if p_squared > limit { break; }
+            if p_squared > upper_limit { break; }
 
-            for j in j_lb..spokes_len {
-                let spoke = spokes[j];
-                if spoke < prime {
-                    j_lb = j;
-                    continue;
-                }
+            for &spoke in &spokes[self.next_spoke[prime]..] {
+                let n = prime * spoke;
+                if n > upper_limit { break; }
 
-                let product = prime * spoke;
-                if product > limit { break; }
-
-                sieve[product / 3] = false;
-                //println!("Crossing out {} x {} = {} at index {}", prime, spoke, product, product / 3);
+                //println!("Crossing out {} x {} = {} at index {}", prime, spoke, n, n / 3);
+                sieve[n / 3] = false;
             }
 
             while spokes[spoke_index] < p_squared {
@@ -130,8 +121,6 @@ impl PrimeIterator {
                 }
                 spoke_index += 1;
             }
-
-            j_lb += 1;
         }
 
         // (4) Add remaining spokes that have not been crossed out
@@ -142,7 +131,7 @@ impl PrimeIterator {
             }
         }
 
-        println!("Initialized {} primes. Last prime added was {}", self.primes.len(), self.primes[self.primes.len() - 1])
+        //println!("Initialized {} primes. Last prime added was {}", self.primes.len(), self.primes[self.primes.len() - 1])
     }
 
     fn extend(&mut self) {
@@ -152,7 +141,7 @@ impl PrimeIterator {
         let upper_limit = (self.segment + 1) * circ;
         let basis_size = self.wheel.basis.len();
 
-        println!("Expanding primes in range {} - {}...", lower_limit, upper_limit);
+        //println!("Expanding primes in range {} - {}...", lower_limit, upper_limit);
 
         // (1) Create a sieve to track spoke primality
         let mut sieve = self.sieve.clone();
@@ -162,25 +151,15 @@ impl PrimeIterator {
             let p_squared = prime * prime;
             if p_squared > upper_limit { break; }
 
-            // prime * (k * circ + s_prime) > lower_limit
-            let lowest_factor = max((lower_limit - 1) / prime + 1, prime);
+            let lowest_factor = (lower_limit - 1) / prime + 1;
             let s_prime = lowest_factor % circ;
-            let mut k = lowest_factor / circ;
-            let mut spoke_index = self.next_spoke[s_prime];
-            loop {
-                let spoke = spokes[spoke_index];
+            let k = lowest_factor / circ;
+            for &spoke in &spokes[self.next_spoke[s_prime]..] {
                 let n = prime * (k * circ + spoke);
                 if n > upper_limit { break; }
 
-                println!("Crossing out {prime} x ({k} * {circ} + {spoke}) = {n} at index {}", n - lower_limit);
+                //println!("Crossing out {prime} x ({k} * {circ} + {spoke}) = {n} at index {}", n - lower_limit);
                 sieve[(n - lower_limit) / 3] = false;
-                if spoke_index < spokes.len() - 1 {
-                    spoke_index += 1
-                } else {
-                    println!("This actually happened!");
-                    k += 1;
-                    spoke_index = 0;
-                }
             }
         }
 
