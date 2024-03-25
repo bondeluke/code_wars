@@ -91,18 +91,17 @@ impl PrimeIterator {
         let spokes = &self.wheel.spokes;
         let upper_limit = self.wheel.circumference();
         let basis_size = self.wheel.basis.len();
-        let spokes_len = spokes.len();
 
-        //println!("Initializing primes up to {}...", self.wheel.circumference());
+        //println!("Expanding primes in range 0 - {}...", upper_limit);
 
-        // (1) Start with the basis and the first non-1 spoke
+        // (0) Start with the basis and the first non-1 spoke
         self.primes.extend(&self.wheel.basis);
         self.primes.push(spokes[1]);
 
-        // (2) Create a sieve to track spoke primality
+        // (1) Create a sieve to track spoke primality
         let mut sieve = self.sieve.clone();
 
-        // (3) Cross out composites using spoke multiples
+        // (2) Cross out composites using spoke multiples
         let mut spoke_index = 2;
         for i in basis_size.. {
             let prime = self.primes[i];
@@ -126,15 +125,13 @@ impl PrimeIterator {
             }
         }
 
-        // (4) Add remaining spokes that have not been crossed out
-        for &spoke in &spokes[spoke_index..spokes_len] {
+        // (3) Add remaining spokes that have not been crossed out
+        for &spoke in &spokes[spoke_index..] {
             if sieve[spoke / 3] {
                 //println!("Adding {spoke} as a prime (leftover)");
                 self.primes.push(spoke);
             }
         }
-
-        //println!("Initialized {} primes. Last prime added was {}", self.primes.len(), self.primes[self.primes.len() - 1])
     }
 
     fn extend(&mut self) {
@@ -154,10 +151,10 @@ impl PrimeIterator {
             let p_squared = prime * prime;
             if p_squared > upper_limit { break; }
 
-            let lowest_factor = (lower_limit - 1) / prime + 1;
-            let s_prime = lowest_factor % circ;
+            let lowest_factor = lower_limit / prime + 1;
+            let spoke_approx = lowest_factor % circ;
             let k = lowest_factor / circ;
-            for &spoke in &spokes[self.next_spoke[s_prime]..] {
+            for &spoke in &spokes[self.next_spoke[spoke_approx]..] {
                 let n = prime * (k * circ + spoke);
                 if n > upper_limit { break; }
 
