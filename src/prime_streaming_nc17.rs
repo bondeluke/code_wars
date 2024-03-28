@@ -1,6 +1,8 @@
 // https://www.codewars.com/kata/59122604e5bc240817000016
 
 use std::iter::once;
+use std::sync::Arc;
+use std::thread;
 
 pub fn stream(basis_size: usize) -> impl Iterator<Item=u32> {
     PrimeIterator::new(basis_size)
@@ -44,9 +46,10 @@ fn get_wheel(basis_size: usize) -> Wheel {
 
 struct PrimeIterator {
     sieve: Vec<bool>,
-    next_spoke: Vec<usize>,
-    wheel: Wheel,
+    next_spoke: Arc<Vec<usize>>,
+    wheel: Arc<Wheel>,
     primes: Vec<usize>,
+    arc_primes: Arc<Vec<usize>>,
     segment: usize,
     cursor: i32,
 }
@@ -56,11 +59,12 @@ impl PrimeIterator {
         let wheel = get_wheel(basis_size);
         Self {
             sieve: PrimeIterator::initialize_sieve(&wheel),
-            next_spoke: PrimeIterator::initialize_next_spoke(&wheel),
-            wheel,
+            next_spoke: Arc::new(PrimeIterator::initialize_next_spoke(&wheel)),
+            wheel: Arc::new(wheel),
             primes: vec![],
             segment: 1,
             cursor: -1,
+            arc_primes: Arc::new(vec![]),
         }
     }
 
@@ -132,9 +136,17 @@ impl PrimeIterator {
                 self.primes.push(spoke);
             }
         }
+
+        self.arc_primes = Arc::new(self.primes.clone());
     }
 
-    fn extend(segment: usize, wheel: &Wheel, primes: &Vec<usize>, sieve: &Vec<bool>, next_spoke: &Vec<usize>) -> Vec<usize> {
+    fn extend(
+        segment: usize,
+        mut sieve: Vec<bool>,
+        wheel: Arc<Wheel>,
+        primes: Arc<Vec<usize>>,
+        next_spoke: Arc<Vec<usize>>,
+    ) -> Vec<usize> {
         let spokes = &wheel.spokes;
         let circ = wheel.circumference();
         let lower_limit = segment * circ;
@@ -143,10 +155,6 @@ impl PrimeIterator {
 
         //println!("Expanding primes in range {} - {}...", lower_limit, upper_limit);
 
-        // (1) Create a sieve to track spoke primality
-        let mut sieve = sieve.clone();
-
-        // (2) Cross out composites using spoke multiples
         for &prime in &primes[basis_size..] {
             let p_squared = prime * prime;
             if p_squared > upper_limit { break; }
@@ -187,14 +195,28 @@ impl Iterator for PrimeIterator {
             if self.cursor == 0 {
                 self.initialize_primes();
             } else {
-                let segment = self.segment;
-                let wheel = &self.wheel;
-                let primes = &self.primes;
-                let sieve = &self.sieve;
-                let next_spoke = &self.next_spoke;
-                let new_primes = PrimeIterator::extend(segment, wheel, primes, sieve, next_spoke);
-                self.primes.extend(new_primes);
-                self.segment += 1;
+                let mut handles = vec![];
+                const THREAD_COUNT: usize = 8;
+
+                for i in 0..THREAD_COUNT {
+                    let segment = self.segment;
+                    let sieve = self.sieve.clone();
+                    let wheel = Arc::clone(&self.wheel);
+                    let primes = Arc::clone(&self.arc_primes);
+                    let next_spoke = Arc::clone(&self.next_spoke);
+
+                    let handle = thread::spawn(move || {
+                        //println!("Thread {} is running", i);
+                        PrimeIterator::extend(segment + i, sieve, wheel, primes, next_spoke)
+                    });
+
+                    handles.push(handle);
+                }
+                // Wait for all threads to finish
+                for handle in handles {
+                    self.primes.extend(handle.join().unwrap());
+                }
+                self.segment += THREAD_COUNT;
             }
         }
 
