@@ -233,7 +233,7 @@ impl Iterator for PrimeIterator {
 mod tests {
     use super::stream;
 
-    fn test_segment(start: u32, numbers: [u32; 10]) {
+    fn test_segment(start: usize, numbers: [usize; 10]) {
         let mut prime_iterator = stream();
         for _ in 0..start {
             prime_iterator.next();
