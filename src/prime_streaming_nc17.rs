@@ -2,8 +2,8 @@
 
 use std::iter::once;
 
-pub fn stream() -> impl Iterator<Item=u32> {
-    PrimeIterator::new()
+pub fn stream(basis_size: usize) -> impl Iterator<Item=u32> {
+    PrimeIterator::new(basis_size)
 }
 
 #[derive(Clone)]
@@ -52,8 +52,8 @@ struct PrimeIterator {
 }
 
 impl PrimeIterator {
-    fn new() -> Self {
-        let wheel = get_wheel(7);
+    fn new(basis_size: usize) -> Self {
+        let wheel = get_wheel(basis_size);
         Self {
             sieve: PrimeIterator::initialize_sieve(&wheel),
             next_spoke: PrimeIterator::initialize_next_spoke(&wheel),
@@ -134,27 +134,27 @@ impl PrimeIterator {
         }
     }
 
-    fn extend(&mut self) {
-        let spokes = &self.wheel.spokes;
-        let circ = self.wheel.circumference();
-        let lower_limit = self.segment * circ;
-        let upper_limit = (self.segment + 1) * circ;
-        let basis_size = self.wheel.basis.len();
+    fn extend(segment: usize, wheel: &Wheel, primes: &Vec<usize>, sieve: &Vec<bool>, next_spoke: &Vec<usize>) -> Vec<usize> {
+        let spokes = &wheel.spokes;
+        let circ = wheel.circumference();
+        let lower_limit = segment * circ;
+        let upper_limit = (segment + 1) * circ;
+        let basis_size = wheel.basis.len();
 
         //println!("Expanding primes in range {} - {}...", lower_limit, upper_limit);
 
         // (1) Create a sieve to track spoke primality
-        let mut sieve = self.sieve.clone();
+        let mut sieve = sieve.clone();
 
         // (2) Cross out composites using spoke multiples
-        for &prime in &self.primes[basis_size..] {
+        for &prime in &primes[basis_size..] {
             let p_squared = prime * prime;
             if p_squared > upper_limit { break; }
 
             let lowest_factor = lower_limit / prime + 1;
             let spoke_approx = lowest_factor % circ;
             let k = lowest_factor / circ;
-            for &spoke in &spokes[self.next_spoke[spoke_approx]..] {
+            for &spoke in &spokes[next_spoke[spoke_approx]..] {
                 let n = prime * (k * circ + spoke);
                 if n > upper_limit { break; }
 
@@ -163,14 +163,17 @@ impl PrimeIterator {
             }
         }
 
+        let mut new_primes: Vec<usize> = Vec::with_capacity(spokes.len());
+
         // (3) Add spokes which have not been crossed out
         for &spoke in spokes {
             if sieve[spoke / 3] {
                 //println!("Adding {spoke} as a prime");
-                self.primes.push(lower_limit + spoke);
+                new_primes.push(lower_limit + spoke);
             }
         }
-        self.segment += 1;
+
+        new_primes
     }
 }
 
@@ -184,7 +187,14 @@ impl Iterator for PrimeIterator {
             if self.cursor == 0 {
                 self.initialize_primes();
             } else {
-                self.extend();
+                let segment = self.segment;
+                let wheel = &self.wheel;
+                let primes = &self.primes;
+                let sieve = &self.sieve;
+                let next_spoke = &self.next_spoke;
+                let new_primes = PrimeIterator::extend(segment, wheel, primes, sieve, next_spoke);
+                self.primes.extend(new_primes);
+                self.segment += 1;
             }
         }
 
@@ -197,7 +207,7 @@ mod tests {
     use super::stream;
 
     fn test_segment(start: u32, numbers: [u32; 10]) {
-        let mut prime_iterator = stream();
+        let mut prime_iterator = stream(7);
         for _ in 0..start {
             prime_iterator.next();
         }

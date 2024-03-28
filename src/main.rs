@@ -45,7 +45,7 @@ mod prime_streaming_nc17;
 
 fn main() {
     let start_time = Instant::now();
-    let mut prime_iterator = stream();
+    let mut prime_iterator = stream(7);
     for _ in 0..50_000_000 {
         prime_iterator.next();
     }
