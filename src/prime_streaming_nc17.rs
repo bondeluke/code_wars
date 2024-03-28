@@ -1,8 +1,11 @@
 // https://www.codewars.com/kata/59122604e5bc240817000016
 
 use std::iter::once;
+use std::sync::Arc;
+use std::thread;
+use std::thread::JoinHandle;
 
-pub fn stream() -> impl Iterator<Item=u32> {
+pub fn stream() -> impl Iterator<Item=usize> {
     PrimeIterator::new()
 }
 
@@ -44,9 +47,10 @@ fn get_wheel(basis_size: usize) -> Wheel {
 
 struct PrimeIterator {
     sieve: Vec<bool>,
-    next_spoke: Vec<usize>,
-    wheel: Wheel,
+    next_spoke: Arc<Vec<usize>>,
+    wheel: Arc<Wheel>,
     primes: Vec<usize>,
+    arc_primes: Arc<Vec<usize>>,
     segment: usize,
     cursor: i32,
 }
@@ -56,11 +60,12 @@ impl PrimeIterator {
         let wheel = get_wheel(7);
         Self {
             sieve: PrimeIterator::initialize_sieve(&wheel),
-            next_spoke: PrimeIterator::initialize_next_spoke(&wheel),
-            wheel,
+            next_spoke: Arc::new(PrimeIterator::initialize_next_spoke(&wheel)),
+            wheel: Arc::new(wheel),
             primes: vec![],
             segment: 1,
             cursor: -1,
+            arc_primes: Arc::new(vec![]),
         }
     }
 
@@ -132,29 +137,34 @@ impl PrimeIterator {
                 self.primes.push(spoke);
             }
         }
+
+        println!("Last prime added to acr_primes was {}", self.primes[self.primes.len() - 1]);
+        self.arc_primes = Arc::new(self.primes.clone());
     }
 
-    fn extend(&mut self) {
-        let spokes = &self.wheel.spokes;
-        let circ = self.wheel.circumference();
-        let lower_limit = self.segment * circ;
-        let upper_limit = (self.segment + 1) * circ;
-        let basis_size = self.wheel.basis.len();
+    fn extend(
+        segment: usize,
+        mut sieve: Vec<bool>,
+        wheel: Arc<Wheel>,
+        primes: Arc<Vec<usize>>,
+        next_spoke: Arc<Vec<usize>>,
+    ) -> Vec<usize> {
+        let spokes = &wheel.spokes;
+        let circ = wheel.circumference();
+        let lower_limit = segment * circ;
+        let upper_limit = (segment + 1) * circ;
+        let basis_size = wheel.basis.len();
 
         //println!("Expanding primes in range {} - {}...", lower_limit, upper_limit);
 
-        // (1) Create a sieve to track spoke primality
-        let mut sieve = self.sieve.clone();
-
-        // (2) Cross out composites using spoke multiples
-        for &prime in &self.primes[basis_size..] {
+        for &prime in &primes[basis_size..] {
             let p_squared = prime * prime;
             if p_squared > upper_limit { break; }
 
             let lowest_factor = lower_limit / prime + 1;
             let spoke_approx = lowest_factor % circ;
             let k = lowest_factor / circ;
-            for &spoke in &spokes[self.next_spoke[spoke_approx]..] {
+            for &spoke in &spokes[next_spoke[spoke_approx]..] {
                 let n = prime * (k * circ + spoke);
                 if n > upper_limit { break; }
 
@@ -163,19 +173,46 @@ impl PrimeIterator {
             }
         }
 
+        let mut new_primes: Vec<usize> = Vec::with_capacity(spokes.len());
+
         // (3) Add spokes which have not been crossed out
         for &spoke in spokes {
             if sieve[spoke / 3] {
                 //println!("Adding {spoke} as a prime");
-                self.primes.push(lower_limit + spoke);
+                new_primes.push(lower_limit + spoke);
             }
         }
-        self.segment += 1;
+
+        new_primes
+    }
+
+    fn extend_in_parallel(&mut self) {
+        //println!("Expanding primes in range {} - {}...", self.segment * self.wheel.circumference(), (self.segment + THREAD_COUNT) * self.wheel.circumference());
+
+        const THREAD_COUNT: usize = 128;
+        (0..THREAD_COUNT)
+            .map(|i| {
+                let segment = self.segment;
+                let sieve = self.sieve.clone();
+                let wheel = Arc::clone(&self.wheel);
+                let primes = Arc::clone(&self.arc_primes);
+                let next_spoke = Arc::clone(&self.next_spoke);
+                thread::spawn(move || {
+                    PrimeIterator::extend(segment + i, sieve, wheel, primes, next_spoke)
+                })
+            })
+            .collect::<Vec<JoinHandle<Vec<usize>>>>()
+            .into_iter()
+            .for_each(|handle| {
+                self.primes.extend(handle.join().unwrap())
+            });
+
+        self.segment += THREAD_COUNT;
     }
 }
 
 impl Iterator for PrimeIterator {
-    type Item = u32;
+    type Item = usize;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.cursor += 1;
@@ -184,11 +221,11 @@ impl Iterator for PrimeIterator {
             if self.cursor == 0 {
                 self.initialize_primes();
             } else {
-                self.extend();
+                self.extend_in_parallel();
             }
         }
 
-        Some(self.primes[self.cursor as usize] as u32)
+        Some(self.primes[self.cursor as usize])
     }
 }
 
