@@ -5,8 +5,8 @@ use std::sync::Arc;
 use std::thread;
 use std::thread::JoinHandle;
 
-pub fn stream(basis_size: usize) -> impl Iterator<Item=u32> {
-    PrimeIterator::new(basis_size)
+pub fn stream() -> impl Iterator<Item=usize> {
+    PrimeIterator::new()
 }
 
 #[derive(Clone)]
@@ -56,8 +56,8 @@ struct PrimeIterator {
 }
 
 impl PrimeIterator {
-    fn new(basis_size: usize) -> Self {
-        let wheel = get_wheel(basis_size);
+    fn new() -> Self {
+        let wheel = get_wheel(7);
         Self {
             sieve: PrimeIterator::initialize_sieve(&wheel),
             next_spoke: Arc::new(PrimeIterator::initialize_next_spoke(&wheel)),
@@ -138,6 +138,7 @@ impl PrimeIterator {
             }
         }
 
+        println!("Last prime added to acr_primes was {}", self.primes[self.primes.len() - 1]);
         self.arc_primes = Arc::new(self.primes.clone());
     }
 
@@ -184,10 +185,34 @@ impl PrimeIterator {
 
         new_primes
     }
+
+    fn extend_in_parallel(&mut self) {
+        //println!("Expanding primes in range {} - {}...", self.segment * self.wheel.circumference(), (self.segment + THREAD_COUNT) * self.wheel.circumference());
+
+        const THREAD_COUNT: usize = 128;
+        (0..THREAD_COUNT)
+            .map(|i| {
+                let segment = self.segment;
+                let sieve = self.sieve.clone();
+                let wheel = Arc::clone(&self.wheel);
+                let primes = Arc::clone(&self.arc_primes);
+                let next_spoke = Arc::clone(&self.next_spoke);
+                thread::spawn(move || {
+                    PrimeIterator::extend(segment + i, sieve, wheel, primes, next_spoke)
+                })
+            })
+            .collect::<Vec<JoinHandle<Vec<usize>>>>()
+            .into_iter()
+            .for_each(|handle| {
+                self.primes.extend(handle.join().unwrap())
+            });
+
+        self.segment += THREAD_COUNT;
+    }
 }
 
 impl Iterator for PrimeIterator {
-    type Item = u32;
+    type Item = usize;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.cursor += 1;
@@ -196,28 +221,11 @@ impl Iterator for PrimeIterator {
             if self.cursor == 0 {
                 self.initialize_primes();
             } else {
-                const THREAD_COUNT: usize = 8;
-
-                let handles = (0..THREAD_COUNT).map(|i| {
-                    let segment = self.segment;
-                    let sieve = self.sieve.clone();
-                    let wheel = Arc::clone(&self.wheel);
-                    let primes = Arc::clone(&self.arc_primes);
-                    let next_spoke = Arc::clone(&self.next_spoke);
-                    thread::spawn(move || {
-                        PrimeIterator::extend(segment + i, sieve, wheel, primes, next_spoke)
-                    })
-                }).collect::<Vec<JoinHandle<Vec<usize>>>>();
-
-                for handle in handles {
-                    self.primes.extend(handle.join().unwrap());
-                }
-
-                self.segment += THREAD_COUNT;
+                self.extend_in_parallel();
             }
         }
 
-        Some(self.primes[self.cursor as usize] as u32)
+        Some(self.primes[self.cursor as usize])
     }
 }
 
@@ -226,7 +234,7 @@ mod tests {
     use super::stream;
 
     fn test_segment(start: u32, numbers: [u32; 10]) {
-        let mut prime_iterator = stream(7);
+        let mut prime_iterator = stream();
         for _ in 0..start {
             prime_iterator.next();
         }
