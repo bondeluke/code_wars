@@ -5,7 +5,7 @@ use std::sync::Arc;
 use std::thread;
 use std::thread::JoinHandle;
 
-pub fn stream(basis_size: usize) -> impl Iterator<Item=u32> {
+pub fn stream(basis_size: usize) -> impl Iterator<Item=usize> {
     PrimeIterator::new(basis_size)
 }
 
@@ -49,10 +49,12 @@ struct PrimeIterator {
     sieve: Vec<bool>,
     next_spoke: Arc<Vec<usize>>,
     wheel: Arc<Wheel>,
-    primes: Vec<usize>,
+    primes: Vec<Vec<usize>>,
     arc_primes: Arc<Vec<usize>>,
     segment: usize,
-    cursor: i32,
+    cursor: usize,
+    primes_index: usize,
+    count: usize,
 }
 
 impl PrimeIterator {
@@ -62,10 +64,12 @@ impl PrimeIterator {
             sieve: PrimeIterator::initialize_sieve(&wheel),
             next_spoke: Arc::new(PrimeIterator::initialize_next_spoke(&wheel)),
             wheel: Arc::new(wheel),
-            primes: vec![],
+            primes: vec![vec![]],
             segment: 1,
-            cursor: -1,
+            cursor: 0,
+            primes_index: 0,
             arc_primes: Arc::new(vec![]),
+            count: 0,
         }
     }
 
@@ -100,8 +104,8 @@ impl PrimeIterator {
         //println!("Expanding primes in range 0 - {}...", upper_limit);
 
         // (0) Start with the basis and the first non-1 spoke
-        self.primes.extend(&self.wheel.basis);
-        self.primes.push(spokes[1]);
+        self.primes[0].extend(&self.wheel.basis);
+        self.primes[0].push(spokes[1]);
 
         // (1) Create a sieve to track spoke primality
         let mut sieve = self.sieve.clone();
@@ -109,7 +113,7 @@ impl PrimeIterator {
         // (2) Cross out composites using spoke multiples
         let mut spoke_index = 2;
         for i in basis_size.. {
-            let prime = self.primes[i];
+            let prime = self.primes[0][i];
             let p_squared = prime * prime;
             if p_squared > upper_limit { break; }
 
@@ -124,7 +128,7 @@ impl PrimeIterator {
             while spokes[spoke_index] < p_squared {
                 if sieve[spokes[spoke_index] / 3] {
                     //println!("Adding {spoke} as a prime");
-                    self.primes.push(spokes[spoke_index]);
+                    self.primes[0].push(spokes[spoke_index]);
                 }
                 spoke_index += 1;
             }
@@ -134,11 +138,11 @@ impl PrimeIterator {
         for &spoke in &spokes[spoke_index..] {
             if sieve[spoke / 3] {
                 //println!("Adding {spoke} as a prime (leftover)");
-                self.primes.push(spoke);
+                self.primes[0].push(spoke);
             }
         }
 
-        self.arc_primes = Arc::new(self.primes.clone());
+        self.arc_primes = Arc::new(self.primes[0].clone());
     }
 
     fn extend(
@@ -187,12 +191,12 @@ impl PrimeIterator {
 }
 
 impl Iterator for PrimeIterator {
-    type Item = u32;
+    type Item = usize;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.cursor += 1;
 
-        if self.cursor as usize == self.primes.len() {
+
+        if self.cursor == self.primes[self.primes_index].len() {
             if self.cursor == 0 {
                 self.initialize_primes();
             } else {
@@ -210,14 +214,26 @@ impl Iterator for PrimeIterator {
                 }).collect::<Vec<JoinHandle<Vec<usize>>>>();
 
                 for handle in handles {
-                    self.primes.extend(handle.join().unwrap());
+                    self.primes[self.primes_index].extend(handle.join().unwrap());
+                }
+
+                const LIMIT: usize = 1878745053;
+                if self.primes[self.primes_index].len() > LIMIT {
+                    println!("pushing more primes");
+                    self.count += self.primes[self.primes_index].len();
+                    self.primes.push(vec![]);
+                    self.primes_index += 1;
                 }
 
                 self.segment += THREAD_COUNT;
             }
         }
 
-        Some(self.primes[self.cursor as usize] as u32)
+        let result = Some(self.primes[0][self.cursor]);
+
+        self.cursor += 1;
+
+        result
     }
 }
 
