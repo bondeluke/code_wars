@@ -3,6 +3,7 @@
 use std::iter::once;
 use std::sync::Arc;
 use std::thread;
+use std::thread::JoinHandle;
 
 pub fn stream(basis_size: usize) -> impl Iterator<Item=u32> {
     PrimeIterator::new(basis_size)
@@ -195,27 +196,23 @@ impl Iterator for PrimeIterator {
             if self.cursor == 0 {
                 self.initialize_primes();
             } else {
-                let mut handles = vec![];
                 const THREAD_COUNT: usize = 8;
 
-                for i in 0..THREAD_COUNT {
+                let handles = (0..THREAD_COUNT).map(|i| {
                     let segment = self.segment;
                     let sieve = self.sieve.clone();
                     let wheel = Arc::clone(&self.wheel);
                     let primes = Arc::clone(&self.arc_primes);
                     let next_spoke = Arc::clone(&self.next_spoke);
-
-                    let handle = thread::spawn(move || {
-                        //println!("Thread {} is running", i);
+                    thread::spawn(move || {
                         PrimeIterator::extend(segment + i, sieve, wheel, primes, next_spoke)
-                    });
+                    })
+                }).collect::<Vec<JoinHandle<Vec<usize>>>>();
 
-                    handles.push(handle);
-                }
-                // Wait for all threads to finish
                 for handle in handles {
                     self.primes.extend(handle.join().unwrap());
                 }
+
                 self.segment += THREAD_COUNT;
             }
         }
